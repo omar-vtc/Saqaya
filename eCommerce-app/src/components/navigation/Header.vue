@@ -194,6 +194,7 @@ const toggleDrawer = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: solid red;
 }
 
 .mobile-drawer__logo {
@@ -245,7 +246,8 @@ const toggleDrawer = () => {
 /* Responsive Adjustments */
 @media (max-width: 992px) {
   .header {
-    padding: 0 1rem;
+    /* padding: 0 1rem; */
+    border: solid blue;
   }
 
   .header__list {
@@ -259,10 +261,15 @@ const toggleDrawer = () => {
 
   .header__logo img {
     max-width: 90px;
+    display: none;
   }
 
   .action-icon {
     font-size: 1.3rem;
+  }
+
+  .header__actions {
+    display: none;
   }
 }
 
