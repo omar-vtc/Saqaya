@@ -35,7 +35,9 @@
   /* border: solid red; */
   display: flex;
   flex-direction: column;
-  box-shadow: 8px 8px 8px 8px rgba(0, 0, 0, 0.05);
+  border: solid 1px rgba(154, 149, 149, 0.189);
+  box-shadow: 5px 5px 5px 5px rgba(117, 116, 116, 0.05);
+  border-radius: 10px;
 
   /* gap: 5px; */
 }

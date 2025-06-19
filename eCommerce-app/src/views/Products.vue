@@ -17,4 +17,10 @@ import ProductCard from "../components/ProductCard.vue";
   align-items: center;
   /* border: solid red; */
 }
+/* Stack cards vertically on small screens */
+@media (max-width: 800px) {
+  .grid-container {
+    grid-template-columns: 1fr; /* Single column */
+  }
+}
 </style>
