@@ -5,6 +5,11 @@ const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
   isDrawerOpen.value = !isDrawerOpen.value;
 };
+
+const isCartOpen = ref(false);
+const toggleCartDrawer = () => {
+  isCartOpen.value = !isCartOpen.value;
+};
 </script>
 
 <template>
@@ -21,12 +26,18 @@ const toggleDrawer = () => {
     <!-- Main navigation (hidden on small screens) -->
     <div class="header__list-container">
       <ul class="header__list">
-        <li class="header__list-item"><p class="list-item__ele">Home</p></li>
         <li class="header__list-item">
-          <p class="list-item__ele">Products</p>
+          <router-link to="/" class="list-item__ele" exact>Home</router-link>
         </li>
         <li class="header__list-item">
-          <p class="list-item__ele">Contact Us</p>
+          <router-link to="products" class="list-item__ele"
+            >Products</router-link
+          >
+        </li>
+        <li class="header__list-item">
+          <router-link to="contact-us" class="list-item__ele"
+            >Contact Us</router-link
+          >
         </li>
       </ul>
     </div>
@@ -36,7 +47,7 @@ const toggleDrawer = () => {
       <div class="action-icon">
         <font-awesome-icon icon="magnifying-glass" />
       </div>
-      <div class="action-icon">
+      <div class="action-icon" @click="toggleCartDrawer">
         <font-awesome-icon icon="shopping-cart" />
       </div>
       <div class="action-icon">
@@ -65,12 +76,25 @@ const toggleDrawer = () => {
         <div class="action-icon">
           <font-awesome-icon icon="magnifying-glass" />
         </div>
-        <div class="action-icon">
+        <div class="action-icon" @click="toggleCartDrawer">
           <font-awesome-icon icon="shopping-cart" />
         </div>
         <div class="action-icon">
           <font-awesome-icon icon="right-to-bracket" />
         </div>
+      </div>
+    </div>
+  </transition>
+
+  <!-- Cart Drawer -->
+  <transition name="slide">
+    <div class="cart-drawer" v-if="isCartOpen">
+      <div class="cart-drawer__header">
+        <h3>Your Cart</h3>
+        <span class="close-btn" @click="toggleCartDrawer">&times;</span>
+      </div>
+      <div class="cart-drawer__content">
+        <p>Your cart is empty.</p>
       </div>
     </div>
   </transition>
@@ -81,6 +105,12 @@ const toggleDrawer = () => {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+:deep(.list-item__ele.router-link-exact-active),
+:deep(.list-item__ele.router-link-active) {
+  background-color: #b6b5b510;
+  color: #ff00ae !important;
 }
 
 .header {
@@ -140,6 +170,7 @@ const toggleDrawer = () => {
   padding: 0.5rem 1.2rem;
   width: max-content;
   border-radius: 7px;
+  text-decoration: none;
 }
 
 .header__list-item .list-item__ele:hover {
@@ -168,18 +199,18 @@ const toggleDrawer = () => {
   color: #ff00ae;
 }
 
-/* Slide transition for drawer */
+/* Slide transition */
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .slide-enter-from,
 .slide-leave-to {
-  transform: translateX(-100%);
+  transform: translateX(100%);
   opacity: 0;
 }
 
-/* Drawer Styles */
+/* Mobile Drawer */
 .mobile-drawer {
   position: fixed;
   top: 0;
@@ -194,7 +225,6 @@ const toggleDrawer = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: solid red;
 }
 
 .mobile-drawer__logo {
@@ -243,11 +273,50 @@ const toggleDrawer = () => {
   border-top: 1px solid #eee;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 992px) {
+/* Cart Drawer */
+.cart-drawer {
+  position: fixed;
+  top: 6rem;
+  right: 0;
+  height: 100%;
+  width: 300px;
+  background-color: white;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  /* border: solid black; */
+}
+
+.cart-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.cart-drawer__header h3 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.close-btn {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.cart-drawer__content {
+  flex: 1;
+  padding-top: 1rem;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 922px) {
   .header {
-    /* padding: 0 1rem; */
-    border: solid blue;
+    padding: 0 1rem;
   }
 
   .header__list {
