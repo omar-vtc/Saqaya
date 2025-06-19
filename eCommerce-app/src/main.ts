@@ -17,6 +17,11 @@ import {
   faLinkedin,
   faSquareXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+
+import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(
@@ -27,7 +32,10 @@ library.add(
   faSquareFacebook,
   faSquareInstagram,
   faLinkedin,
-  faSquareXTwitter
+  faSquareXTwitter,
+  faHeartRegular,
+  faCartPlus,
+  faSquarePlus
 );
 
 import "@mdi/font/css/materialdesignicons.css";
