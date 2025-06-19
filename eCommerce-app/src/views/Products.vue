@@ -1,5 +1,9 @@
+<script setup lang="ts">
+import ProductCard from "../components/ProductCard.vue";
+</script>
+
 <template>
   <v-container>
-    <h1>Products Page</h1>
+    <ProductCard />
   </v-container>
 </template>
