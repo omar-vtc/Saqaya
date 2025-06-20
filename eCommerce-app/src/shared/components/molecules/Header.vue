@@ -3,6 +3,7 @@ import { ref } from "vue";
 import Logo from "../atoms/Logo.vue";
 import LinkRouter from "../atoms/LinkRouter.vue";
 import NavList from "./NavList.vue";
+import ActionIcon from "../atoms/ActionIcon.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
@@ -32,15 +33,13 @@ const toggleCartDrawer = () => {
 
     <!-- Icons -->
     <div class="header__actions">
-      <div class="action-icon">
-        <font-awesome-icon icon="magnifying-glass" />
-      </div>
-      <div class="action-icon" @click="toggleCartDrawer">
-        <font-awesome-icon icon="shopping-cart" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon icon="right-to-bracket" />
-      </div>
+      <ActionIcon class-name="action-icon" :IconClass="'magnifying-glass'" />
+      <ActionIcon
+        class-name="action-icon"
+        @click="toggleCartDrawer"
+        :IconClass="'shopping-cart'"
+      />
+      <ActionIcon class-name="action-icon" :IconClass="'right-to-bracket'" />
     </div>
   </div>
 
