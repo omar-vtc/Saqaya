@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Logo from "../atoms/Logo.vue";
+import LinkRouter from "../atoms/LinkRouter.vue";
+import NavList from "./NavList.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
@@ -22,23 +24,11 @@ const toggleCartDrawer = () => {
     </div>
 
     <!-- Main navigation (hidden on small screens) -->
-    <div class="header__list-container">
-      <ul class="header__list">
-        <li class="header__list-item">
-          <router-link to="/" class="list-item__ele" exact>Home</router-link>
-        </li>
-        <li class="header__list-item">
-          <router-link to="products" class="list-item__ele"
-            >Products</router-link
-          >
-        </li>
-        <li class="header__list-item">
-          <router-link to="contact-us" class="list-item__ele"
-            >Contact Us</router-link
-          >
-        </li>
-      </ul>
-    </div>
+    <NavList
+      div-class-name="header__list-container"
+      class-name="header__list"
+      ele-class-name="header__list-item"
+    />
 
     <!-- Icons -->
     <div class="header__actions">
@@ -105,8 +95,8 @@ const toggleCartDrawer = () => {
   padding: 0;
 }
 
-:deep(.list-item__ele.router-link-exact-active),
-:deep(.list-item__ele.router-link-active) {
+.list-item__ele.router-link-exact-active,
+.list-item__ele.router-link-active {
   background-color: #b6b5b510;
   color: #ff00ae !important;
 }
