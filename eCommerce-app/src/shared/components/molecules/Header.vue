@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Logo from "../atoms/Logo.vue";
-import LinkRouter from "../atoms/LinkRouter.vue";
 import NavList from "./NavList.vue";
-import ActionIcon from "../atoms/ActionIcon.vue";
+import ListOfActionIcons from "./ListOfActionIcons.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
@@ -32,44 +31,41 @@ const toggleCartDrawer = () => {
     />
 
     <!-- Icons -->
-    <div class="header__actions">
-      <ActionIcon class-name="action-icon" :IconClass="'magnifying-glass'" />
-      <ActionIcon
-        class-name="action-icon"
-        @click="toggleCartDrawer"
-        :IconClass="'shopping-cart'"
-      />
-      <ActionIcon class-name="action-icon" :IconClass="'right-to-bracket'" />
-    </div>
+    <ListOfActionIcons
+      className="header__actions"
+      iconClass="action-icon"
+      :icons="[
+        { name: 'magnifying-glass' },
+        { name: 'shopping-cart', onClick: toggleCartDrawer },
+        { name: 'right-to-bracket' },
+      ]"
+    />
   </div>
 
   <!-- Drawer on small screens -->
   <transition name="slide">
     <div class="mobile-drawer" v-if="isDrawerOpen">
       <!-- Logo -->
-      <div class="mobile-drawer__logo">
-        <img src="../../assets/img/logo2.png" alt="Logo" />
-      </div>
+      <Logo
+        class-name="mobile-drawer__logo"
+        img-class-name="mobile-drawer__logo--img"
+      />
 
-      <!-- Nav Links -->
-      <ul class="mobile-drawer__list">
-        <li @click="toggleDrawer">Home</li>
-        <li @click="toggleDrawer">Products</li>
-        <li @click="toggleDrawer">Contact Us</li>
-      </ul>
+      <!-- drawer Nav Links -->
+
+      <NavList div-class-name="mobile-drawer__list" class-name="header__list"
+      ele-class-name="header__list-item" onClick: toggleCartDrawer />
 
       <!-- Actions -->
-      <div class="mobile-drawer__actions">
-        <div class="action-icon">
-          <font-awesome-icon icon="magnifying-glass" />
-        </div>
-        <div class="action-icon" @click="toggleCartDrawer">
-          <font-awesome-icon icon="shopping-cart" />
-        </div>
-        <div class="action-icon">
-          <font-awesome-icon icon="right-to-bracket" />
-        </div>
-      </div>
+      <ListOfActionIcons
+        className="mobile-drawer__actions"
+        iconClass="action-icon"
+        :icons="[
+          { name: 'magnifying-glass' },
+          { name: 'shopping-cart', onClick: toggleCartDrawer },
+          { name: 'right-to-bracket' },
+        ]"
+      />
     </div>
   </transition>
 
@@ -81,7 +77,7 @@ const toggleCartDrawer = () => {
         <span class="close-btn" @click="toggleCartDrawer">&times;</span>
       </div>
       <div class="cart-drawer__content">
-        <p>Your cart is empty.</p>
+        <p>Your cart is empty</p>
       </div>
     </div>
   </transition>
@@ -223,7 +219,7 @@ const toggleCartDrawer = () => {
   border-bottom: 1px solid #eee;
 }
 
-.mobile-drawer__logo img {
+.mobile-drawer__logo--img {
   height: 40px;
   object-fit: contain;
 }
@@ -240,16 +236,15 @@ const toggleCartDrawer = () => {
   flex: 1;
 }
 
-.mobile-drawer__list li {
+.mobile-drawer__list--listItem {
   font-size: 1.2rem;
   font-weight: 500;
   color: #333;
-  cursor: pointer;
   padding: 0.5rem 1.5rem;
   transition: color 0.2s ease;
 }
 
-.mobile-drawer__list li:hover {
+.mobile-drawer__list--listItem:hover {
   color: #ff00ae;
 }
 
@@ -309,6 +304,7 @@ const toggleCartDrawer = () => {
 
   .header__list {
     gap: 1.5rem;
+    flex-direction: column;
   }
 
   .header__list-item .list-item__ele {
@@ -327,6 +323,23 @@ const toggleCartDrawer = () => {
 
   .header__actions {
     display: none;
+  }
+}
+
+/* Mobile vertical layout */
+@media (max-width: 600px) {
+  .mobile-drawer__list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-left: 2rem;
+  }
+
+  .mobile-drawer__list .list-item__ele {
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+    text-align: left;
   }
 }
 

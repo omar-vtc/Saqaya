@@ -5,6 +5,7 @@ const props = defineProps<{
   divClassName?: string;
   className?: string;
   eleClassName?: string;
+  onClick?: () => void; // optional click handler
 }>();
 </script>
 <template>
