@@ -8,7 +8,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import Header from "../components/navigation/Header.vue";
+import Header from "../shared/components/molecules/Header.vue";
 import Footer from "../components/navigation/Footer.vue";
 </script>
 <style>

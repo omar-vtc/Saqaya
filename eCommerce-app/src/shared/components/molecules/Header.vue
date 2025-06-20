@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import Logo from "../atoms/Logo.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
@@ -14,10 +15,7 @@ const toggleCartDrawer = () => {
 
 <template>
   <div class="header">
-    <div class="header__logo">
-      <img src="../../assets/img/logo2.png" alt="Logo" />
-    </div>
-
+    <Logo class-name="header__logo" img-class-name="header__logo--img" />
     <!-- Hamburger icon for mobile -->
     <div class="header__hamburger" @click="toggleDrawer">
       <font-awesome-icon icon="bars" />
@@ -100,7 +98,7 @@ const toggleCartDrawer = () => {
   </transition>
 </template>
 
-<style scoped>
+<style>
 * {
   box-sizing: border-box;
   margin: 0;
@@ -132,9 +130,10 @@ const toggleCartDrawer = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* border: solid; */
 }
 
-.header__logo img {
+.header__logo--img {
   object-fit: contain;
   height: 95%;
   max-width: 150px;
