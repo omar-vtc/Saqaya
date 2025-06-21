@@ -3,14 +3,22 @@ import { ref } from "vue";
 import Logo from "../atoms/Logo.vue";
 import NavList from "./NavList.vue";
 import ListOfActionIcons from "./ListOfActionIcons.vue";
+import ActionIcon from "../atoms/ActionIcon.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
+  if (isCartOpen.value) {
+    isCartOpen.value = false;
+  }
   isDrawerOpen.value = !isDrawerOpen.value;
 };
 
 const isCartOpen = ref(false);
 const toggleCartDrawer = () => {
+  // Close mobile drawer if it's open
+  if (isDrawerOpen.value) {
+    isDrawerOpen.value = false;
+  }
   isCartOpen.value = !isCartOpen.value;
 };
 </script>
@@ -19,9 +27,11 @@ const toggleCartDrawer = () => {
   <div class="header">
     <Logo class-name="header__logo" img-class-name="header__logo--img" />
     <!-- Hamburger icon for mobile -->
-    <div class="header__hamburger" @click="toggleDrawer">
-      <font-awesome-icon icon="bars" />
-    </div>
+    <ActionIcon
+      className="header__hamburger"
+      IconClass="bars"
+      @Click="toggleDrawer"
+    />
 
     <!-- Main navigation (hidden on small screens) -->
     <NavList
@@ -30,7 +40,7 @@ const toggleCartDrawer = () => {
       ele-class-name="header__list-item"
     />
 
-    <!-- Icons -->
+    <!-- Action Icons -->
     <ListOfActionIcons
       className="header__actions"
       iconClass="action-icon"
@@ -43,7 +53,7 @@ const toggleCartDrawer = () => {
   </div>
 
   <!-- Drawer on small screens -->
-  <transition name="slide">
+  <transition name="mobile-slide">
     <div class="mobile-drawer" v-if="isDrawerOpen">
       <!-- Logo -->
       <Logo
@@ -106,6 +116,10 @@ const toggleCartDrawer = () => {
   background-color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 }
 
@@ -195,6 +209,32 @@ const toggleCartDrawer = () => {
 }
 
 /* Mobile Drawer */
+
+/* Slide in from left (enter) */
+.mobile-slide-enter-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.mobile-slide-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.mobile-slide-enter-to {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+/* Slide out to right (leave) */
+.mobile-slide-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.mobile-slide-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+.mobile-slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
 .mobile-drawer {
   position: fixed;
   top: 0;
@@ -259,7 +299,7 @@ const toggleCartDrawer = () => {
 /* Cart Drawer */
 .cart-drawer {
   position: fixed;
-  top: 6rem;
+  top: 5rem;
   right: 0;
   height: 100%;
   width: 300px;
@@ -304,7 +344,7 @@ const toggleCartDrawer = () => {
 
   .header__list {
     gap: 1.5rem;
-    flex-direction: column;
+    /* flex-direction: column; */
   }
 
   .header__list-item .list-item__ele {
@@ -313,21 +353,20 @@ const toggleCartDrawer = () => {
   }
 
   .header__logo img {
-    max-width: 90px;
-    display: none;
+    max-width: 70px;
   }
 
   .action-icon {
     font-size: 1.3rem;
   }
-
-  .header__actions {
-    display: none;
-  }
 }
 
 /* Mobile vertical layout */
 @media (max-width: 600px) {
+  .header__list {
+    gap: 1.5rem;
+    flex-direction: column;
+  }
   .mobile-drawer__list {
     display: flex;
     flex-direction: column;
@@ -340,6 +379,13 @@ const toggleCartDrawer = () => {
     padding: 0.5rem 1.5rem;
     width: 100%;
     text-align: left;
+  }
+  .header__logo img {
+    max-width: 70px;
+    display: none;
+  }
+  .header__actions {
+    display: none;
   }
 }
 

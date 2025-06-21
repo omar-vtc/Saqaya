@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <Header />
-    <main class="main">
+    <main class="main page-content">
       <router-view />
     </main>
     <Footer />
@@ -29,5 +29,9 @@ body,
 
 .main {
   flex: 1; /* pushes the footer down */
+}
+/* Add this to your styles */
+.page-content {
+  padding-top: 6rem; /* Equal to header height */
 }
 </style>
