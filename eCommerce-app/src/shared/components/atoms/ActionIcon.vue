@@ -3,7 +3,7 @@ import { defineProps } from "vue";
 
 const props = defineProps<{
   className?: string;
-  IconClass: string;
+  IconClass: string | [string, string];
   onClick?: () => void; // optional click handler
 }>();
 console.log(props.IconClass);

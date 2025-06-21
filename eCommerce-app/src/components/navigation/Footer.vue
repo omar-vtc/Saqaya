@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import ListOfActionIcons from "../../shared/components/molecules/ListOfActionIcons.vue";
+</script>
+
 <template>
   <footer class="footer">
     <div class="grid">
@@ -29,20 +33,18 @@
       <div class="social__copy-right">
         &copy; 2025 Saqaya. All rights reserved.
       </div>
-      <div class="social__media">
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-instagram']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-facebook']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'linkedin']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-x-twitter']" />
-        </div>
-      </div>
+
+      <!-- social media actions -->
+      <ListOfActionIcons
+        className="social__media"
+        iconClass="social__media--icon"
+        :icons="[
+          { name: ['fab', 'square-instagram'] },
+          { name: ['fab', 'square-facebook'] },
+          { name: ['fab', 'linkedin'] },
+          { name: ['fab', 'square-x-twitter'] },
+        ]"
+      />
     </div>
   </footer>
 </template>

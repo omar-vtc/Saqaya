@@ -3,7 +3,7 @@ import { defineProps } from "vue";
 import ActionIcon from "../atoms/ActionIcon.vue";
 
 type IconItem = {
-  name: string; // FontAwesome icon name
+  name: string | [string, string]; // FontAwesome icon name
   onClick?: () => void; // optional click handler
 };
 
