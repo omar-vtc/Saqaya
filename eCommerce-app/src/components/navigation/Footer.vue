@@ -1,26 +1,44 @@
 <script setup lang="ts">
+import GridItem from "../../shared/components/atoms/GridItem.vue";
+import Grid from "../../shared/components/molecules/Grid.vue";
 import ListOfActionIcons from "../../shared/components/molecules/ListOfActionIcons.vue";
 </script>
 
 <template>
   <footer class="footer">
-    <div class="grid">
-      <div class="grid__item grid__item--column-title">Navigate</div>
-      <div class="grid__item grid__item--column-title">Collection</div>
-      <div class="grid__item grid__item--column-title">Categories</div>
-      <div class="grid__item">About Us</div>
-      <div class="grid__item">New Arrivals</div>
-      <div class="grid__item">Men</div>
-      <div class="grid__item">Blog</div>
-      <div class="grid__item">Featured</div>
-      <div class="grid__item">Women</div>
-      <div class="grid__item">Contact</div>
-      <div class="grid__item">Sale</div>
-      <div class="grid__item">Kids</div>
-      <div class="grid__item">FAQ</div>
-      <div class="grid__item">Best Sellers</div>
-      <div class="grid__item">Accessories</div>
-    </div>
+    <Grid>
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Navigate</GridItem
+      >
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Collection</GridItem
+      >
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Categories</GridItem
+      >
+
+      <GridItem prefixClassName="grid__item">About Us</GridItem>
+      <GridItem prefixClassName="grid__item">New Arrivals</GridItem>
+      <GridItem prefixClassName="grid__item">Men</GridItem>
+
+      <GridItem prefixClassName="grid__item">Blog</GridItem>
+      <GridItem prefixClassName="grid__item">Featured</GridItem>
+      <GridItem prefixClassName="grid__item">Women</GridItem>
+
+      <GridItem prefixClassName="grid__item">Contact</GridItem>
+      <GridItem prefixClassName="grid__item">Sale</GridItem>
+      <GridItem prefixClassName="grid__item">Kids</GridItem>
+
+      <GridItem prefixClassName="grid__item">FAQ</GridItem>
+      <GridItem prefixClassName="grid__item">Best Sellers</GridItem>
+      <GridItem prefixClassName="grid__item">Accessories</GridItem>
+    </Grid>
     <div class="infoContainer">
       <div class="info__title">
         <p>399 Nadi Elseid Road, Dokki District 4587</p>
