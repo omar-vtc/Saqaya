@@ -90,12 +90,7 @@ import ListOfActionIcons from "../../shared/components/molecules/ListOfActionIco
 }
 
 .grid__item {
-  /* background-color: #f0f0f0;
-  border: 1px solid #ccc; */
   text-align: center;
-
-  /* line-height: 10px; */
-  /* font-weight: bold; */
 }
 
 .grid__item--column-title {
