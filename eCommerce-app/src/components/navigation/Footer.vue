@@ -1,22 +1,44 @@
+<script setup lang="ts">
+import GridItem from "../../shared/components/atoms/GridItem.vue";
+import Grid from "../../shared/components/molecules/Grid.vue";
+import ListOfActionIcons from "../../shared/components/molecules/ListOfActionIcons.vue";
+</script>
+
 <template>
   <footer class="footer">
-    <div class="grid">
-      <div class="grid__item grid__item--column-title">Navigate</div>
-      <div class="grid__item grid__item--column-title">Collection</div>
-      <div class="grid__item grid__item--column-title">Categories</div>
-      <div class="grid__item">About Us</div>
-      <div class="grid__item">New Arrivals</div>
-      <div class="grid__item">Men</div>
-      <div class="grid__item">Blog</div>
-      <div class="grid__item">Featured</div>
-      <div class="grid__item">Women</div>
-      <div class="grid__item">Contact</div>
-      <div class="grid__item">Sale</div>
-      <div class="grid__item">Kids</div>
-      <div class="grid__item">FAQ</div>
-      <div class="grid__item">Best Sellers</div>
-      <div class="grid__item">Accessories</div>
-    </div>
+    <Grid>
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Navigate</GridItem
+      >
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Collection</GridItem
+      >
+      <GridItem
+        prefixClassName="grid__item"
+        className="grid__item--column-title"
+        >Categories</GridItem
+      >
+
+      <GridItem prefixClassName="grid__item">About Us</GridItem>
+      <GridItem prefixClassName="grid__item">New Arrivals</GridItem>
+      <GridItem prefixClassName="grid__item">Men</GridItem>
+
+      <GridItem prefixClassName="grid__item">Blog</GridItem>
+      <GridItem prefixClassName="grid__item">Featured</GridItem>
+      <GridItem prefixClassName="grid__item">Women</GridItem>
+
+      <GridItem prefixClassName="grid__item">Contact</GridItem>
+      <GridItem prefixClassName="grid__item">Sale</GridItem>
+      <GridItem prefixClassName="grid__item">Kids</GridItem>
+
+      <GridItem prefixClassName="grid__item">FAQ</GridItem>
+      <GridItem prefixClassName="grid__item">Best Sellers</GridItem>
+      <GridItem prefixClassName="grid__item">Accessories</GridItem>
+    </Grid>
     <div class="infoContainer">
       <div class="info__title">
         <p>399 Nadi Elseid Road, Dokki District 4587</p>
@@ -29,20 +51,18 @@
       <div class="social__copy-right">
         &copy; 2025 Saqaya. All rights reserved.
       </div>
-      <div class="social__media">
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-instagram']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-facebook']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'linkedin']" />
-        </div>
-        <div class="social__media--icon">
-          <font-awesome-icon :icon="['fab', 'square-x-twitter']" />
-        </div>
-      </div>
+
+      <!-- social media actions -->
+      <ListOfActionIcons
+        className="social__media"
+        iconClass="social__media--icon"
+        :icons="[
+          { name: ['fab', 'square-instagram'] },
+          { name: ['fab', 'square-facebook'] },
+          { name: ['fab', 'linkedin'] },
+          { name: ['fab', 'square-x-twitter'] },
+        ]"
+      />
     </div>
   </footer>
 </template>
@@ -70,12 +90,7 @@
 }
 
 .grid__item {
-  /* background-color: #f0f0f0;
-  border: 1px solid #ccc; */
   text-align: center;
-
-  /* line-height: 10px; */
-  /* font-weight: bold; */
 }
 
 .grid__item--column-title {

@@ -1,88 +1,81 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import Logo from "../atoms/Logo.vue";
+import NavList from "./NavList.vue";
+import ListOfActionIcons from "./ListOfActionIcons.vue";
+import ActionIcon from "../atoms/ActionIcon.vue";
 
 const isDrawerOpen = ref(false);
 const toggleDrawer = () => {
+  if (isCartOpen.value) {
+    isCartOpen.value = false;
+  }
   isDrawerOpen.value = !isDrawerOpen.value;
 };
 
 const isCartOpen = ref(false);
 const toggleCartDrawer = () => {
+  // Close mobile drawer if it's open
+  if (isDrawerOpen.value) {
+    isDrawerOpen.value = false;
+  }
   isCartOpen.value = !isCartOpen.value;
 };
 </script>
 
 <template>
   <div class="header">
-    <div class="header__logo">
-      <img src="../../assets/img/logo2.png" alt="Logo" />
-    </div>
-
+    <Logo class-name="header__logo" img-class-name="header__logo--img" />
     <!-- Hamburger icon for mobile -->
-    <div class="header__hamburger" @click="toggleDrawer">
-      <font-awesome-icon icon="bars" />
-    </div>
+    <ActionIcon
+      className="header__hamburger"
+      IconClass="bars"
+      @Click="toggleDrawer"
+    />
 
     <!-- Main navigation (hidden on small screens) -->
-    <div class="header__list-container">
-      <ul class="header__list">
-        <li class="header__list-item">
-          <router-link to="/" class="list-item__ele" exact>Home</router-link>
-        </li>
-        <li class="header__list-item">
-          <router-link to="products" class="list-item__ele"
-            >Products</router-link
-          >
-        </li>
-        <li class="header__list-item">
-          <router-link to="contact-us" class="list-item__ele"
-            >Contact Us</router-link
-          >
-        </li>
-      </ul>
-    </div>
+    <NavList
+      div-class-name="header__list-container"
+      class-name="header__list"
+      ele-class-name="header__list-item"
+    />
 
-    <!-- Icons -->
-    <div class="header__actions">
-      <div class="action-icon">
-        <font-awesome-icon icon="magnifying-glass" />
-      </div>
-      <div class="action-icon" @click="toggleCartDrawer">
-        <font-awesome-icon icon="shopping-cart" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon icon="right-to-bracket" />
-      </div>
-    </div>
+    <!-- Action Icons -->
+    <ListOfActionIcons
+      className="header__actions"
+      iconClass="action-icon"
+      :icons="[
+        { name: 'magnifying-glass' },
+        { name: 'shopping-cart', onClick: toggleCartDrawer },
+        { name: 'right-to-bracket' },
+      ]"
+    />
   </div>
 
   <!-- Drawer on small screens -->
-  <transition name="slide">
+  <transition name="mobile-slide">
     <div class="mobile-drawer" v-if="isDrawerOpen">
       <!-- Logo -->
-      <div class="mobile-drawer__logo">
-        <img src="../../assets/img/logo2.png" alt="Logo" />
-      </div>
+      <Logo
+        class-name="mobile-drawer__logo"
+        img-class-name="mobile-drawer__logo--img"
+      />
 
-      <!-- Nav Links -->
-      <ul class="mobile-drawer__list">
-        <li @click="toggleDrawer">Home</li>
-        <li @click="toggleDrawer">Products</li>
-        <li @click="toggleDrawer">Contact Us</li>
-      </ul>
+      <!-- drawer Nav Links -->
+
+      <NavList div-class-name="mobile-drawer__list" class-name="header__list"
+      ele-class-name="header__list-item" onClick: toggleCartDrawer />
 
       <!-- Actions -->
-      <div class="mobile-drawer__actions">
-        <div class="action-icon">
-          <font-awesome-icon icon="magnifying-glass" />
-        </div>
-        <div class="action-icon" @click="toggleCartDrawer">
-          <font-awesome-icon icon="shopping-cart" />
-        </div>
-        <div class="action-icon">
-          <font-awesome-icon icon="right-to-bracket" />
-        </div>
-      </div>
+      <ListOfActionIcons
+        className="mobile-drawer__actions"
+        iconClass="action-icon"
+        :icons="[
+          { name: 'magnifying-glass' },
+          { name: 'shopping-cart', onClick: toggleCartDrawer },
+          { name: 'right-to-bracket' },
+        ]"
+      />
     </div>
   </transition>
 
@@ -94,21 +87,21 @@ const toggleCartDrawer = () => {
         <span class="close-btn" @click="toggleCartDrawer">&times;</span>
       </div>
       <div class="cart-drawer__content">
-        <p>Your cart is empty.</p>
+        <p>Your cart is empty</p>
       </div>
     </div>
   </transition>
 </template>
 
-<style scoped>
+<style>
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-:deep(.list-item__ele.router-link-exact-active),
-:deep(.list-item__ele.router-link-active) {
+.list-item__ele.router-link-exact-active,
+.list-item__ele.router-link-active {
   background-color: #b6b5b510;
   color: #ff00ae !important;
 }
@@ -123,6 +116,10 @@ const toggleCartDrawer = () => {
   background-color: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 }
 
@@ -132,9 +129,10 @@ const toggleCartDrawer = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* border: solid; */
 }
 
-.header__logo img {
+.header__logo--img {
   object-fit: contain;
   height: 95%;
   max-width: 150px;
@@ -211,6 +209,32 @@ const toggleCartDrawer = () => {
 }
 
 /* Mobile Drawer */
+
+/* Slide in from left (enter) */
+.mobile-slide-enter-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.mobile-slide-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.mobile-slide-enter-to {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+/* Slide out to right (leave) */
+.mobile-slide-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.mobile-slide-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+.mobile-slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
 .mobile-drawer {
   position: fixed;
   top: 0;
@@ -235,7 +259,7 @@ const toggleCartDrawer = () => {
   border-bottom: 1px solid #eee;
 }
 
-.mobile-drawer__logo img {
+.mobile-drawer__logo--img {
   height: 40px;
   object-fit: contain;
 }
@@ -252,16 +276,15 @@ const toggleCartDrawer = () => {
   flex: 1;
 }
 
-.mobile-drawer__list li {
+.mobile-drawer__list--listItem {
   font-size: 1.2rem;
   font-weight: 500;
   color: #333;
-  cursor: pointer;
   padding: 0.5rem 1.5rem;
   transition: color 0.2s ease;
 }
 
-.mobile-drawer__list li:hover {
+.mobile-drawer__list--listItem:hover {
   color: #ff00ae;
 }
 
@@ -276,7 +299,7 @@ const toggleCartDrawer = () => {
 /* Cart Drawer */
 .cart-drawer {
   position: fixed;
-  top: 6rem;
+  top: 5rem;
   right: 0;
   height: 100%;
   width: 300px;
@@ -321,6 +344,7 @@ const toggleCartDrawer = () => {
 
   .header__list {
     gap: 1.5rem;
+    /* flex-direction: column; */
   }
 
   .header__list-item .list-item__ele {
@@ -329,14 +353,37 @@ const toggleCartDrawer = () => {
   }
 
   .header__logo img {
-    max-width: 90px;
-    display: none;
+    max-width: 70px;
   }
 
   .action-icon {
     font-size: 1.3rem;
   }
+}
 
+/* Mobile vertical layout */
+@media (max-width: 600px) {
+  .header__list {
+    gap: 1.5rem;
+    flex-direction: column;
+  }
+  .mobile-drawer__list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-left: 2rem;
+  }
+
+  .mobile-drawer__list .list-item__ele {
+    padding: 0.5rem 1.5rem;
+    width: 100%;
+    text-align: left;
+  }
+  .header__logo img {
+    max-width: 70px;
+    display: none;
+  }
   .header__actions {
     display: none;
   }

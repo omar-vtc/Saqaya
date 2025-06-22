@@ -1,14 +1,14 @@
 <template>
   <div class="app">
     <Header />
-    <main class="main">
+    <main class="main page-content">
       <router-view />
     </main>
     <Footer />
   </div>
 </template>
 <script setup lang="ts">
-import Header from "../components/navigation/Header.vue";
+import Header from "../shared/components/molecules/Header.vue";
 import Footer from "../components/navigation/Footer.vue";
 </script>
 <style>
@@ -29,5 +29,9 @@ body,
 
 .main {
   flex: 1; /* pushes the footer down */
+}
+/* Add this to your styles */
+.page-content {
+  padding-top: 6rem; /* Equal to header height */
 }
 </style>
