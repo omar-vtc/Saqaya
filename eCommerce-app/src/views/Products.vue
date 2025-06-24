@@ -1,12 +1,35 @@
-<script setup lang="ts">
+<script lang="ts">
 import ProductCard from "../components/ProductCard.vue";
+import Pagination from "../shared/components/molecules/Pagination.vue";
+import { fetchProducts } from "../data/api/getProducts";
+
+import type Product from "../data/entities/Product";
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "ProductsPage",
+  components: {
+    ProductCard,
+    Pagination,
+  },
+  data() {
+    return {
+      products: [] as Product[],
+    };
+  },
+  async mounted() {
+    this.products = await fetchProducts();
+  },
+});
 </script>
 
 <template>
   <div class="grid-container">
     <ProductCard v-for="n in 8" :key="n" />
   </div>
+  <Pagination />
 </template>
+
 <style scoped>
 .grid-container {
   display: grid;

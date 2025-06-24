@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
+import { defineProps } from "vue";
+
+const props = defineProps<{
+  title?: string;
+  price?: number;
+  description?: string;
+  imageSrc?: string;
+}>();
+</script>
+
 <template>
   <div class="card">
     <div class="card__title-container">
@@ -17,21 +29,19 @@
         perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
       </p>
     </div>
-    <div class="card__actions-container">
-      <div class="action-icon">
-        <font-awesome-icon icon="fa-regular fa-heart" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon icon="fa-solid fa-cart-plus" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon :icon="['far', 'square-plus']" />
-      </div>
-    </div>
+    <ListOfActionIcons
+      className="card__actions-container"
+      iconClass="card__actions-container--icon"
+      :icons="[
+        { name: 'fa-regular fa-heart' },
+        { name: 'fa-solid fa-cart-plus' },
+        { name: ['far', 'square-plus'] },
+      ]"
+    />
   </div>
 </template>
 
-<style scoped>
+<style>
 .card {
   width: 22rem;
   height: 27rem;
@@ -56,13 +66,16 @@
 
 .card__title-container--title {
   flex: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   /* border: solid saddlebrown; */
 }
 .card__title-container--price {
   flex: 1;
   text-align: right;
-  font-weight: 600;
+  font-weight: 500;
   color: #610243;
   font-size: 1.2rem;
   /* border: solid red; */
@@ -112,15 +125,15 @@
   align-items: center;
 }
 
-.action-icon {
-  font-size: 1.2rem;
+.card__actions-container--icon {
+  font-size: 1rem;
   font-weight: 500;
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.action-icon:hover {
+.card__actions-container--icon:hover {
   color: #ff00ae;
 }
 </style>
