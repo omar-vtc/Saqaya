@@ -2,6 +2,7 @@
   <div class="card">
     <div class="card__title-container">
       <h3 class="card__title-container--title">Product Name</h3>
+      <h3 class="card__title-container--price">0.00$</h3>
     </div>
     <div class="card__img-container">
       <div class="card__img-container--img">
@@ -10,6 +11,8 @@
     </div>
     <div class="card__description-container">
       <p>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
+        perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
         perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
       </p>
@@ -48,12 +51,22 @@
   /* border: solid rebeccapurple; */
   padding: 0.5rem;
   flex: 0.5;
+  display: flex;
 }
 
 .card__title-container--title {
+  flex: 3;
+
   /* border: solid saddlebrown; */
 }
-
+.card__title-container--price {
+  flex: 1;
+  text-align: right;
+  font-weight: 600;
+  color: #610243;
+  font-size: 1.2rem;
+  /* border: solid red; */
+}
 /* =========================== Product image part =================================*/
 
 .card__img-container {
@@ -78,8 +91,12 @@
 
 .card__description-container {
   flex: 2;
-  /* border: solid black; */
   padding: 0.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* change this to how many lines you want */
+  line-clamp: 4;
 }
 .card__description-container p {
   font-size: 1rem;
