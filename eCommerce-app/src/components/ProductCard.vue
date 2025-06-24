@@ -13,8 +13,8 @@ const props = defineProps<{
 <template>
   <div class="card">
     <div class="card__title-container">
-      <h3 class="card__title-container--title">Product Name</h3>
-      <h3 class="card__title-container--price">0.00$</h3>
+      <h3 class="card__title-container--title">{{ props.title }}</h3>
+      <h3 class="card__title-container--price">{{ props.price }}$</h3>
     </div>
     <div class="card__img-container">
       <div class="card__img-container--img">
@@ -23,10 +23,7 @@ const props = defineProps<{
     </div>
     <div class="card__description-container">
       <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
-        perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
-        perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
+        {{ props.description }}
       </p>
     </div>
     <ListOfActionIcons
@@ -86,6 +83,7 @@ const props = defineProps<{
   flex: 4;
   /* border: solid blue; */
   padding: 0.2rem;
+  overflow: hidden;
 }
 .card__img-container--img {
   /* border: solid black; */
@@ -98,6 +96,8 @@ const props = defineProps<{
 .card__img-container--img img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  /* border: solid red; */
 }
 
 /* =========================== Product description part =================================*/

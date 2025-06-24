@@ -17,7 +17,7 @@ export default defineComponent({
       products: [] as Product[],
     };
   },
-  async mounted() {
+  async created() {
     this.products = await fetchProducts();
   },
 });
@@ -25,7 +25,14 @@ export default defineComponent({
 
 <template>
   <div class="grid-container">
-    <ProductCard v-for="n in 8" :key="n" />
+    <ProductCard
+      v-for="product in products"
+      :key="product.id"
+      :title="product.name"
+      :price="product.price"
+      :description="product.description"
+      :imageSrc="product.image"
+    />
   </div>
   <Pagination />
 </template>
