@@ -6,7 +6,7 @@ const props = defineProps<{
   imgClassName?: string;
 }>();
 
-console.log(props.imgClassName);
+// console.log(props.imgClassName);
 </script>
 <template>
   <div :class="props.className">

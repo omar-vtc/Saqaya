@@ -1,10 +1,9 @@
 <script lang="ts">
+import { defineComponent, computed } from "vue";
+import { useStore } from "vuex";
 import ProductCard from "../components/ProductCard.vue";
 import Pagination from "../shared/components/molecules/Pagination.vue";
-import { fetchProducts } from "../data/api/getProducts";
-
 import type Product from "../data/entities/Product";
-import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "ProductsPage",
@@ -12,13 +11,15 @@ export default defineComponent({
     ProductCard,
     Pagination,
   },
-  data() {
-    return {
-      products: [] as Product[],
-    };
+  computed: {
+    products(): Product[] {
+      // Access the Vuex getter from the products module
+      return this.$store.getters["products/allProducts"];
+    },
   },
-  async created() {
-    this.products = await fetchProducts();
+  async mounted() {
+    // Dispatch the action to load products once component mounts
+    await this.$store.dispatch("products/loadProducts");
   },
 });
 </script>

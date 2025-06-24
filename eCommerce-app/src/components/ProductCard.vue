@@ -18,7 +18,8 @@ const props = defineProps<{
     </div>
     <div class="card__img-container">
       <div class="card__img-container--img">
-        <img src="../assets/img/apple17.png" alt="" />
+        <!-- <img src="../assets/img/apple17.png" alt="" /> -->
+        <img :src="props.imageSrc" alt="" />
       </div>
     </div>
     <div class="card__description-container">
