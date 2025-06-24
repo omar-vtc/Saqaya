@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import GridItem from "../../shared/components/atoms/GridItem.vue";
-import Grid from "../../shared/components/molecules/Grid.vue";
-import ListOfActionIcons from "../../shared/components/molecules/ListOfActionIcons.vue";
+import GridItem from "../atoms/GridItem.vue";
+import Grid from "../molecules/Grid.vue";
 </script>
 
 <template>
