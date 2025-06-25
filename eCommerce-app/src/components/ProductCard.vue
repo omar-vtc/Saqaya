@@ -25,7 +25,7 @@ export default defineComponent({
         description: this.description ?? "",
         image: this.imageSrc ?? "",
       };
-      console.log("Adding product to cart:", product);
+      // console.log("Adding product to cart:", product);
       const store = useStore();
       this.$store.dispatch("cart/addProductToCart", product);
     },
@@ -46,7 +46,7 @@ export default defineComponent({
         {
           name: "fa-solid fa-cart-plus",
           onClick: () => this.handleAddToCart(),
-          class: this.cartIconClass, // ✅ only cart icon gets dynamic class
+          class: this.cartIconClass,
         },
         { name: ["far", "square-plus"] },
       ];
