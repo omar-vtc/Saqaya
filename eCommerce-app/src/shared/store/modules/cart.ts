@@ -20,6 +20,11 @@ export const cart: Module<CartState, RootState> = {
       state.items = state.items.filter((item) => item.id !== productId);
     },
   },
+  actions: {
+    addProductToCart({ commit }, product: Product) {
+      commit("addToCart", product);
+    },
+  },
   getters: {
     cartItems: (state) => state.items,
     cartCount: (state) => state.items.length,
