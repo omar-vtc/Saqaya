@@ -16,21 +16,8 @@ export default defineComponent({
     description: String,
     imageSrc: String,
   },
-  methods: {
-    handleAddToCart() {
-      const product: Product = {
-        id: this.id ?? 0,
-        name: this.title ?? "",
-        price: this.price ?? 0,
-        description: this.description ?? "",
-        image: this.imageSrc ?? "",
-      };
-      // console.log("Adding product to cart:", product);
-      const store = useStore();
-      this.$store.dispatch("cart/addProductToCart", product);
-    },
-  },
   computed: {
+    // This computed property checks if the product is in the cart
     isInCart(): boolean {
       const items: Product[] = this.$store.getters["cart/cartItems"];
       return items.some((item) => item.id === this.id);
@@ -40,16 +27,34 @@ export default defineComponent({
         ? "card__actions-container--icon active"
         : "card__actions-container--icon";
     },
+    // This method returns the action icons for the product card (setting activity for cart icon)
     actionIcons(): any[] {
       return [
         { name: "fa-regular fa-heart" },
         {
           name: "fa-solid fa-cart-plus",
-          onClick: () => this.handleAddToCart(),
+          onClick: () => this.toggleCart(),
           class: this.cartIconClass,
         },
         { name: ["far", "square-plus"] },
       ];
+    },
+  },
+  methods: {
+    toggleCart() {
+      const product: Product = {
+        id: this.id ?? 0,
+        name: this.title ?? "",
+        price: this.price ?? 0,
+        description: this.description ?? "",
+        image: this.imageSrc ?? "",
+      };
+
+      if (this.isInCart) {
+        this.$store.dispatch("cart/removeProductFromCart", product.id);
+      } else {
+        this.$store.dispatch("cart/addProductToCart", product);
+      }
     },
   },
 });

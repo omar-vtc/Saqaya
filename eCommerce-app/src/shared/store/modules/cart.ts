@@ -25,6 +25,10 @@ export const cart: Module<CartState, RootState> = {
       console.log("Adding product to cart from store:", product);
       commit("addToCart", product);
     },
+    removeProductFromCart({ commit }, productId: number) {
+      console.log("Removing product from cart:", productId);
+      commit("removeFromCart", productId);
+    },
   },
   getters: {
     cartItems: (state) => state.items,
