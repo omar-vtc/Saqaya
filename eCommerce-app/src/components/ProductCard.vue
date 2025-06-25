@@ -1,40 +1,81 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from "vue";
+import { useStore } from "vuex";
+import type Product from "../data/entities/Product";
 import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
-import { defineProps } from "vue";
 
-const props = defineProps<{
-  title?: string;
-  price?: number;
-  description?: string;
-  imageSrc?: string;
-}>();
+export default defineComponent({
+  name: "ProductCard",
+  components: {
+    ListOfActionIcons,
+  },
+  props: {
+    id: Number,
+    title: String,
+    price: Number,
+    description: String,
+    imageSrc: String,
+  },
+  methods: {
+    handleAddToCart() {
+      const product: Product = {
+        id: this.id ?? 0,
+        name: this.title ?? "",
+        price: this.price ?? 0,
+        description: this.description ?? "",
+        image: this.imageSrc ?? "",
+      };
+      console.log("Adding product to cart:", product);
+      const store = useStore();
+      this.$store.dispatch("cart/addProductToCart", product);
+    },
+  },
+  computed: {
+    isInCart(): boolean {
+      const items: Product[] = this.$store.getters["cart/cartItems"];
+      return items.some((item) => item.id === this.id);
+    },
+    cartIconClass(): string {
+      return this.isInCart
+        ? "card__actions-container--icon active"
+        : "card__actions-container--icon";
+    },
+    actionIcons(): any[] {
+      return [
+        { name: "fa-regular fa-heart" },
+        {
+          name: "fa-solid fa-cart-plus",
+          onClick: () => this.handleAddToCart(),
+          class: this.cartIconClass, // ✅ only cart icon gets dynamic class
+        },
+        { name: ["far", "square-plus"] },
+      ];
+    },
+  },
+});
 </script>
 
 <template>
   <div class="card">
     <div class="card__title-container">
-      <h3 class="card__title-container--title">{{ props.title }}</h3>
-      <h3 class="card__title-container--price">{{ props.price }}$</h3>
+      <h3 class="card__title-container--title">{{ title }}</h3>
+      <h3 class="card__title-container--price">{{ price }}$</h3>
     </div>
+
     <div class="card__img-container">
       <div class="card__img-container--img">
-        <!-- <img src="../assets/img/apple17.png" alt="" /> -->
-        <img :src="props.imageSrc" alt="" />
+        <img :src="imageSrc" alt="" />
       </div>
     </div>
+
     <div class="card__description-container">
-      <p>
-        {{ props.description }}
-      </p>
+      <p>{{ description }}</p>
     </div>
+
     <ListOfActionIcons
-      className="card__actions-container"
-      iconClass="card__actions-container--icon"
-      :icons="[
-        { name: 'fa-regular fa-heart' },
-        { name: 'fa-solid fa-cart-plus' },
-        { name: ['far', 'square-plus'] },
-      ]"
+      :className="'card__actions-container'"
+      :iconClass="'card__actions-container--icon'"
+      :icons="actionIcons"
     />
   </div>
 </template>
@@ -132,6 +173,10 @@ const props = defineProps<{
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card__actions-container--icon.active {
+  color: #ff00ae;
 }
 
 .card__actions-container--icon:hover {

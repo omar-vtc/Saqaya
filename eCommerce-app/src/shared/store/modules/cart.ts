@@ -22,6 +22,7 @@ export const cart: Module<CartState, RootState> = {
   },
   actions: {
     addProductToCart({ commit }, product: Product) {
+      console.log("Adding product to cart from store:", product);
       commit("addToCart", product);
     },
   },

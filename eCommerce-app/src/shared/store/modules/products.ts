@@ -21,7 +21,7 @@ export const products: Module<ProductsState, RootState> = {
   actions: {
     async loadProducts({ commit }) {
       const products = await fetchProducts();
-      console.log("Loaded products from store:", products);
+      // console.log("Loaded products from store:", products);
       commit("setProducts", products);
     },
   },
