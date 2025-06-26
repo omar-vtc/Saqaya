@@ -8,7 +8,7 @@ const props = defineProps<{
   exact?: boolean;
 }>();
 
-console.log(props.exact);
+// console.log(props.exact);
 </script>
 
 <template>

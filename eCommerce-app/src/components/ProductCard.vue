@@ -1,34 +1,90 @@
+<script lang="ts">
+import { defineComponent } from "vue";
+import type Product from "../data/entities/Product";
+import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
+
+export default defineComponent({
+  name: "ProductCard",
+  components: {
+    ListOfActionIcons,
+  },
+  props: {
+    id: Number,
+    title: String,
+    price: Number,
+    description: String,
+    imageSrc: String,
+  },
+  computed: {
+    // This computed property checks if the product is in the cart
+    isInCart(): boolean {
+      const items: Product[] = this.$store.getters["cart/cartItems"];
+      return items.some((item) => item.id === this.id);
+    },
+    cartIconClass(): string {
+      return this.isInCart
+        ? "card__actions-container--icon active"
+        : "card__actions-container--icon";
+    },
+    // This method returns the action icons for the product card (setting activity for cart icon)
+    actionIcons(): any[] {
+      return [
+        { name: "fa-regular fa-heart" },
+        {
+          name: "fa-solid fa-cart-plus",
+          onClick: () => this.toggleCart(),
+          class: this.cartIconClass,
+        },
+        { name: ["far", "square-plus"] },
+      ];
+    },
+  },
+  methods: {
+    toggleCart() {
+      const product: Product = {
+        id: this.id ?? 0,
+        name: this.title ?? "",
+        price: this.price ?? 0,
+        description: this.description ?? "",
+        image: this.imageSrc ?? "",
+      };
+
+      if (this.isInCart) {
+        this.$store.dispatch("cart/removeProductFromCart", product.id);
+      } else {
+        this.$store.dispatch("cart/addProductToCart", product);
+      }
+    },
+  },
+});
+</script>
+
 <template>
   <div class="card">
     <div class="card__title-container">
-      <h3 class="card__title-container--title">Product Name</h3>
+      <h3 class="card__title-container--title">{{ title }}</h3>
+      <h3 class="card__title-container--price">{{ price }}$</h3>
     </div>
+
     <div class="card__img-container">
       <div class="card__img-container--img">
-        <img src="../assets/img/apple17.png" alt="" />
+        <img :src="imageSrc" alt="" />
       </div>
     </div>
+
     <div class="card__description-container">
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
-        perferendis ipsa, odio, illum consectetur voluptatum eligendi quod
-      </p>
+      <p>{{ description }}</p>
     </div>
-    <div class="card__actions-container">
-      <div class="action-icon">
-        <font-awesome-icon icon="fa-regular fa-heart" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon icon="fa-solid fa-cart-plus" />
-      </div>
-      <div class="action-icon">
-        <font-awesome-icon :icon="['far', 'square-plus']" />
-      </div>
-    </div>
+
+    <ListOfActionIcons
+      :className="'card__actions-container'"
+      :iconClass="'card__actions-container--icon'"
+      :icons="actionIcons"
+    />
   </div>
 </template>
 
-<style scoped>
+<style>
 .card {
   width: 22rem;
   height: 27rem;
@@ -48,18 +104,32 @@
   /* border: solid rebeccapurple; */
   padding: 0.5rem;
   flex: 0.5;
+  display: flex;
 }
 
 .card__title-container--title {
+  flex: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
   /* border: solid saddlebrown; */
 }
-
+.card__title-container--price {
+  flex: 1;
+  text-align: right;
+  font-weight: 500;
+  color: #610243;
+  font-size: 1.2rem;
+  /* border: solid red; */
+}
 /* =========================== Product image part =================================*/
 
 .card__img-container {
   flex: 4;
   /* border: solid blue; */
   padding: 0.2rem;
+  overflow: hidden;
 }
 .card__img-container--img {
   /* border: solid black; */
@@ -72,14 +142,20 @@
 .card__img-container--img img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  /* border: solid red; */
 }
 
 /* =========================== Product description part =================================*/
 
 .card__description-container {
   flex: 2;
-  /* border: solid black; */
   padding: 0.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* change this to how many lines you want */
+  line-clamp: 4;
 }
 .card__description-container p {
   font-size: 1rem;
@@ -95,15 +171,19 @@
   align-items: center;
 }
 
-.action-icon {
-  font-size: 1.2rem;
+.card__actions-container--icon {
+  font-size: 1rem;
   font-weight: 500;
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.action-icon:hover {
+.card__actions-container--icon.active {
+  color: #ff00ae;
+}
+
+.card__actions-container--icon:hover {
   color: #ff00ae;
 }
 </style>

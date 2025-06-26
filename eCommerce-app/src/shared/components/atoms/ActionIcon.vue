@@ -6,7 +6,7 @@ const props = defineProps<{
   IconClass: string | [string, string];
   onClick?: () => void; // optional click handler
 }>();
-console.log(props.IconClass);
+// console.log(props.IconClass);
 </script>
 
 <template>

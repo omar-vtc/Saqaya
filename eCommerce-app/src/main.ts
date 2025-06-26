@@ -40,7 +40,10 @@ library.add(
 
 import "@mdi/font/css/materialdesignicons.css";
 
+import { store } from "./shared/store";
+
 const app = createApp(App);
+app.use(store);
 app.use(router);
 app.use(vuetify);
 app.component("font-awesome-icon", FontAwesomeIcon);

@@ -1,25 +1,43 @@
-<script setup lang="ts">
-import { ref } from "vue";
+<script lang="ts">
+import { ref, computed } from "vue";
+import { mapGetters, mapActions } from "vuex";
 import Logo from "../atoms/Logo.vue";
 import NavList from "./NavList.vue";
 import ListOfActionIcons from "./ListOfActionIcons.vue";
 import ActionIcon from "../atoms/ActionIcon.vue";
+import Cart from "./Cart.vue";
 
-const isDrawerOpen = ref(false);
-const toggleDrawer = () => {
-  if (isCartOpen.value) {
-    isCartOpen.value = false;
-  }
-  isDrawerOpen.value = !isDrawerOpen.value;
-};
-
-const isCartOpen = ref(false);
-const toggleCartDrawer = () => {
-  // Close mobile drawer if it's open
-  if (isDrawerOpen.value) {
-    isDrawerOpen.value = false;
-  }
-  isCartOpen.value = !isCartOpen.value;
+export default {
+  components: {
+    Logo,
+    NavList,
+    ListOfActionIcons,
+    ActionIcon,
+    Cart,
+  },
+  data() {
+    return {
+      isDrawerOpen: false,
+      isCartOpen: false,
+    };
+  },
+  computed: {
+    ...mapGetters("cart", ["cartItems"]),
+  },
+  methods: {
+    ...mapActions("cart", ["removeProductFromCart"]),
+    toggleDrawer() {
+      if (this.isCartOpen) this.isCartOpen = false;
+      this.isDrawerOpen = !this.isDrawerOpen;
+    },
+    toggleCartDrawer() {
+      if (this.isDrawerOpen) this.isDrawerOpen = false;
+      this.isCartOpen = !this.isCartOpen;
+    },
+    handleRemove(id: number) {
+      this.removeProductFromCart(id);
+    },
+  },
 };
 </script>
 
@@ -80,17 +98,7 @@ const toggleCartDrawer = () => {
   </transition>
 
   <!-- Cart Drawer -->
-  <transition name="slide">
-    <div class="cart-drawer" v-if="isCartOpen">
-      <div class="cart-drawer__header">
-        <h3>Your Cart</h3>
-        <span class="close-btn" @click="toggleCartDrawer">&times;</span>
-      </div>
-      <div class="cart-drawer__content">
-        <p>Your cart is empty</p>
-      </div>
-    </div>
-  </transition>
+  <Cart :isOpen="isCartOpen" @close="toggleCartDrawer" />
 </template>
 
 <style>
@@ -299,9 +307,9 @@ const toggleCartDrawer = () => {
 /* Cart Drawer */
 .cart-drawer {
   position: fixed;
-  top: 5rem;
+  top: 6rem;
   right: 0;
-  height: 100%;
+  height: 90%;
   width: 300px;
   background-color: white;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
@@ -336,6 +344,86 @@ const toggleCartDrawer = () => {
   overflow-y: auto;
 }
 
+/*cart content*/
+.cart-product-card {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-product-card__image {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cart-product-card__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.cart-product-card__title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.cart-product-card__price {
+  font-size: 0.95rem;
+  color: #610243;
+  margin: 0.25rem 0;
+}
+
+.cart-product-card__remove {
+  background: none;
+  border: none;
+  color: #ff0040;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+.cart-drawer__footer {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 1rem;
+  align-items: center;
+}
+
+.cart-total__amount {
+  color: #610243;
+}
+.checkout-button {
+  padding: 0.5rem 0.5rem;
+  background-color: #610243;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 20px;
+}
+
+.checkout-button:hover {
+  background-color: #8a055d;
+}
 /* Responsive */
 @media (max-width: 922px) {
   .header {
