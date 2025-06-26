@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useStore } from "vuex";
 import type Product from "../data/entities/Product";
 import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
 
