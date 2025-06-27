@@ -6,6 +6,7 @@ type IconItem = {
   name: string | [string, string];
   onClick?: () => void;
   class?: string; // ✅ new optional class per icon
+  badgeCount?: number; // 🆕 add this
 };
 
 const props = defineProps<{
@@ -22,6 +23,7 @@ const props = defineProps<{
       :key="index"
       :class-name="icon.class ?? props.iconClass"
       :IconClass="icon.name"
+      :badgeCount="icon.badgeCount"
       @click="icon.onClick"
     />
   </div>
