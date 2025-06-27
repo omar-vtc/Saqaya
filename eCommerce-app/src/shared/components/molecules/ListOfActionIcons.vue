@@ -5,8 +5,8 @@ import ActionIcon from "../atoms/ActionIcon.vue";
 type IconItem = {
   name: string | [string, string];
   onClick?: () => void;
-  class?: string; // ✅ new optional class per icon
-  badgeCount?: number; // 🆕 add this
+  class?: string;
+  badgeCount?: number;
 };
 
 const props = defineProps<{
