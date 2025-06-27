@@ -64,7 +64,11 @@ export default {
       iconClass="action-icon"
       :icons="[
         { name: 'magnifying-glass' },
-        { name: 'shopping-cart', onClick: toggleCartDrawer },
+        {
+          name: 'shopping-cart',
+          onClick: toggleCartDrawer,
+          badgeCount: cartItems.length,
+        },
         { name: 'right-to-bracket' },
       ]"
     />
@@ -204,7 +208,22 @@ export default {
 .action-icon:hover {
   color: #ff00ae;
 }
-
+.icon-container {
+  position: relative;
+  display: inline-block;
+}
+.icon-badge {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.6rem;
+  background-color: #ff008c;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 0.15rem 0.4rem;
+  border-radius: 50%;
+  line-height: 1;
+}
 /* Slide transition */
 .slide-enter-active,
 .slide-leave-active {
@@ -507,6 +526,12 @@ export default {
 
   .action-icon {
     font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 601px) {
+  .header__hamburger {
+    display: none !important;
   }
 }
 </style>
