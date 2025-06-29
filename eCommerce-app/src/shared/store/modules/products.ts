@@ -21,13 +21,16 @@ export const products: Module<ProductsState, RootState> = {
   actions: {
     async loadProducts({ commit }) {
       const products = await fetchProducts();
-      // console.log("Loaded products from store:", products);
+      console.log("Loaded products from store:", products);
       commit("setProducts", products);
     },
   },
   getters: {
     allProducts(state) {
       return state.products;
+    },
+    getProductById: (state) => (id: number) => {
+      return state.products.find((product) => product.id === id);
     },
   },
 };

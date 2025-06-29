@@ -1,3 +1,4 @@
+// data/api/getProducts.ts
 import Product from "../entities/Product";
 
 export async function fetchProducts(): Promise<Product[]> {
@@ -9,13 +10,17 @@ export async function fetchProducts(): Promise<Product[]> {
       throw new Error("Invalid API response");
     }
 
-    // Transform the API response to match the Product interface
     const products: Product[] = data.map((item: any) => ({
       id: item.id,
       name: item.title,
       price: item.price,
       description: item.description,
       image: item.image,
+      category: item.category,
+      rating: {
+        rate: item.rating?.rate ?? 0,
+        count: item.rating?.count ?? 0,
+      },
     }));
 
     return products;
