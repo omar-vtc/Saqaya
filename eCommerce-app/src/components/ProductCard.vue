@@ -55,12 +55,19 @@ export default defineComponent({
         this.$store.dispatch("cart/addProductToCart", product);
       }
     },
+    handleCardClick(event: MouseEvent) {
+      // If the click originated from an icon, don't emit
+      const target = event.target as HTMLElement;
+      if (target.closest(".card__actions-container--icon")) return;
+      // Otherwise, emit click to parent
+      this.$emit("card-click", this.id);
+    },
   },
 });
 </script>
 
 <template>
-  <div class="card">
+  <div class="card" @click="handleCardClick">
     <div class="card__title-container">
       <h3 class="card__title-container--title">{{ title }}</h3>
       <h3 class="card__title-container--price">{{ price }}$</h3>

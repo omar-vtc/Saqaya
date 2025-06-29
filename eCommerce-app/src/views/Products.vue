@@ -1,8 +1,8 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { useStore } from "vuex";
+import { defineComponent } from "vue";
 import ProductCard from "../components/ProductCard.vue";
 import Pagination from "../shared/components/molecules/Pagination.vue";
+import ProductModal from "../components/ProductModal.vue";
 import type Product from "../data/entities/Product";
 
 export default defineComponent({
@@ -10,25 +10,33 @@ export default defineComponent({
   components: {
     ProductCard,
     Pagination,
+    ProductModal,
   },
   data() {
     return {
-      cartItems: [] as Product[],
+      selectedProductId: null as number | null,
     };
   },
   computed: {
     products(): Product[] {
-      // Access the Vuex getter from the products module
       return this.$store.getters["products/allProducts"];
+    },
+    selectedProduct(): Product | undefined {
+      return this.selectedProductId !== null
+        ? this.$store.getters["products/getProductById"](this.selectedProductId)
+        : undefined;
+    },
+  },
+  methods: {
+    openProductModal(productId: number) {
+      this.selectedProductId = productId;
+    },
+    closeProductModal() {
+      this.selectedProductId = null;
     },
   },
   async mounted() {
-    // Dispatch the action to load products once component mounts
     await this.$store.dispatch("products/loadProducts");
-    // ✅ Get cart items from cart module
-    this.cartItems = this.$store.getters["cart/cartItems"];
-
-    console.log("Cart contains FROM store:", this.cartItems);
   },
 });
 </script>
@@ -43,25 +51,28 @@ export default defineComponent({
       :price="product.price"
       :description="product.description"
       :imageSrc="product.image"
+      @card-click="openProductModal"
     />
   </div>
-  <Pagination />
+
+  <ProductModal :product="selectedProduct" @close="closeProductModal" />
+
+  <!-- <Pagination /> -->
 </template>
 
 <style scoped>
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  grid-template-columns: repeat(3, 1fr);
   gap: 4rem;
   padding: 2rem;
   justify-items: center;
   align-items: center;
-  /* border: solid red; */
 }
-/* Stack cards vertically on small screens */
+
 @media (max-width: 800px) {
   .grid-container {
-    grid-template-columns: 1fr; /* Single column */
+    grid-template-columns: 1fr;
   }
 }
 </style>
