@@ -28,7 +28,7 @@ describe("NavList.vue", () => {
       },
       global: {
         stubs: {
-          LinkRouter: true, // Stub to avoid rendering full component
+          LinkRouter: true,
         },
       },
     });

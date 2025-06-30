@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import GridItem from "../../src/shared/components/atoms/GridItem.vue"; // Adjust the path as needed
+import GridItem from "../../src/shared/components/atoms/GridItem.vue";
 
 describe("GridItem.vue", () => {
   it("renders slot content", () => {

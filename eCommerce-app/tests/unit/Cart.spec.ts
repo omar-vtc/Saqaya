@@ -72,8 +72,6 @@ describe("Cart.vue", () => {
     const removeButtons = wrapper.findAll(".cart-product-card__remove");
     await removeButtons[0].trigger("click");
 
-    // Because you're using mapActions('cart', [...]), Vuex auto-handles namespacing,
-    // so the dispatched action name is just the local one.
     expect(dispatchMock).toHaveBeenCalledWith(
       "removeProductFromCart",
       mockCartItems[0].id

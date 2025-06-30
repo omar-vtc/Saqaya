@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import Grid from "../../src/shared/components/molecules/Grid.vue"; // Adjust path as necessary
+import Grid from "../../src/shared/components/molecules/Grid.vue";
 
 describe("Grid.vue", () => {
   it("renders default slot content", () => {
