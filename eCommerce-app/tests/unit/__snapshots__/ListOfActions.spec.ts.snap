@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ListOfActionIcons.vue > matches snapshot 1`] = `
+"<div class="">
+  <div class="icon-home icon-container">
+    <font-awesome-icon-stub icon="fa fa-home"></font-awesome-icon-stub><span class="icon-badge">2</span>
+  </div>
+  <div class="icon-cart icon-container">
+    <font-awesome-icon-stub icon="fas,cart-plus"></font-awesome-icon-stub><span class="icon-badge">5</span>
+  </div>
+</div>"
+`;

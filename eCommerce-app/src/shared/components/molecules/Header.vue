@@ -63,13 +63,14 @@ export default {
       className="header__actions"
       iconClass="action-icon"
       :icons="[
-        { name: 'magnifying-glass' },
+        { name: 'magnifying-glass', 'data-testid': 'icon-magnifying-glass' },
         {
           name: 'shopping-cart',
           onClick: toggleCartDrawer,
           badgeCount: cartItems.length,
+          'data-testid': 'icon-shopping-cart',
         },
-        { name: 'right-to-bracket' },
+        { name: 'right-to-bracket', 'data-testid': 'icon-login' },
       ]"
     />
   </div>
