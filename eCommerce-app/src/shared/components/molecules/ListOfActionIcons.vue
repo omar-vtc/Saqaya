@@ -7,6 +7,7 @@ type IconItem = {
   onClick?: () => void;
   class?: string;
   badgeCount?: number;
+  [key: string]: unknown; // ← This allows extra props like `data-testid`
 };
 
 const props = defineProps<{
@@ -25,6 +26,7 @@ const props = defineProps<{
       :IconClass="icon.name"
       :badgeCount="icon.badgeCount"
       @click="icon.onClick"
+      v-bind="icon"
     />
   </div>
 </template>

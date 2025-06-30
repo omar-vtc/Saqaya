@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NavList.vue > matches snapshot 1`] = `
+"<div class="">
+  <ul class="">
+    <li class="">
+      <link-router-stub to="/" class="list-item__ele" exact="true" value="Home"></link-router-stub>
+    </li>
+    <li class="">
+      <link-router-stub to="/products" class="list-item__ele" exact="false" value="Products"></link-router-stub>
+    </li>
+    <li class="">
+      <link-router-stub to="/contact-us" class="list-item__ele" exact="false" value="Contact Us"></link-router-stub>
+    </li>
+  </ul>
+</div>"
+`;

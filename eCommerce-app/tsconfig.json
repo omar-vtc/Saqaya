@@ -4,11 +4,14 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-    "lib": ["ESNext", "DOM"]
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "types": ["vitest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "tests", "vitest.config.ts"]
 }
