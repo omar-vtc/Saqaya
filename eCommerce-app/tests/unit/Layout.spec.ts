@@ -6,7 +6,6 @@ import Header from "../../src/shared/components/molecules/Header.vue";
 import Footer from "../../src/shared/components/molecules/Footer.vue";
 import { createStore } from "vuex";
 import { createRouter, createWebHistory } from "vue-router";
-import { h } from "vue";
 
 // Stub for font-awesome-icon
 const FontAwesomeIconStub = {
