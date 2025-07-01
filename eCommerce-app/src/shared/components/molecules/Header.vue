@@ -327,7 +327,7 @@ export default {
 /* Cart Drawer */
 .cart-drawer {
   position: fixed;
-  top: 4.5rem;
+  top: 6rem;
   right: 0;
   height: 90%;
   width: 300px;
@@ -523,6 +523,9 @@ export default {
 
   .action-icon {
     font-size: 1.2rem;
+  }
+  .cart-drawer {
+    top: 4.5rem;
   }
 }
 
