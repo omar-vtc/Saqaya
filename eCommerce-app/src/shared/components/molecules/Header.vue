@@ -90,7 +90,7 @@ export default {
       ele-class-name="header__list-item" onClick: toggleCartDrawer />
 
       <!-- Actions -->
-      <ListOfActionIcons
+      <!-- <ListOfActionIcons
         className="mobile-drawer__actions"
         iconClass="action-icon"
         :icons="[
@@ -98,7 +98,7 @@ export default {
           { name: 'shopping-cart', onClick: toggleCartDrawer },
           { name: 'right-to-bracket' },
         ]"
-      />
+      /> -->
     </div>
   </transition>
 
@@ -327,7 +327,7 @@ export default {
 /* Cart Drawer */
 .cart-drawer {
   position: fixed;
-  top: 6rem;
+  top: 4.5rem;
   right: 0;
   height: 90%;
   width: 300px;
@@ -492,9 +492,6 @@ export default {
     max-width: 70px;
     display: none;
   }
-  .header__actions {
-    display: none;
-  }
 }
 
 @media (max-width: 600px) {
@@ -520,8 +517,7 @@ export default {
   }
 
   .header__actions {
-    flex: none;
-    justify-content: center;
+    justify-content: flex-end;
     width: 100%;
   }
 
