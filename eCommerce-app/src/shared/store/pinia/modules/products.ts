@@ -1,31 +1,33 @@
-// stores/products.ts
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 import type Product from "../../../../data/entities/Product";
 import { fetchProducts } from "../../../../data/api/getProducts";
 
-export const useProductStore = defineStore("products", () => {
-  const products = ref<Product[]>([]);
+interface State {
+  products: Product[];
+}
 
-  const setProducts = (newProducts: Product[]) => {
-    products.value = newProducts;
-  };
+export const useProductStore = defineStore("products", {
+  state: (): State => ({
+    products: [],
+  }),
 
-  const loadProducts = async () => {
-    const loadedProducts = await fetchProducts();
-    console.log("Loaded products from pinia store:", loadedProducts);
-    setProducts(loadedProducts);
-  };
+  getters: {
+    allProducts: (state) => state.products,
+    getProductById: (state) => {
+      return (id: number) =>
+        state.products.find((product) => product.id === id);
+    },
+  },
 
-  const allProducts = computed(() => products.value);
-  const getProductById = (id: number) =>
-    products.value.find((product) => product.id === id);
+  actions: {
+    setProducts(newProducts: Product[]) {
+      this.products = newProducts;
+    },
 
-  return {
-    products,
-    loadProducts,
-    setProducts,
-    allProducts,
-    getProductById,
-  };
+    async loadProducts() {
+      const loadedProducts = await fetchProducts();
+      console.log("Loaded products from pinia store:", loadedProducts);
+      this.setProducts(loadedProducts);
+    },
+  },
 });

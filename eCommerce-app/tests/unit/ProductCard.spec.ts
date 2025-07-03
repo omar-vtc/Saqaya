@@ -1,6 +1,10 @@
+/// <reference types="vitest" />
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 import ProductCard from "../../src/components/ProductCard.vue";
+import { useCartStore } from "../../src/shared/store/pinia";
+import type Product from "../../src/data/entities/Product"; // ✅ Import Product type
 
 // Mock product
 const mockProduct = {
@@ -11,36 +15,43 @@ const mockProduct = {
   imageSrc: "https://example.com/image.jpg",
 };
 
-// Mock Vuex store
-const cartItemsMock = [mockProduct];
+// ✅ Properly typed cartItems
+const createWrapper = (
+  cartItems: Product[] = [],
+  customCartStore?: ReturnType<typeof useCartStore>
+) => {
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  const cartStore = useCartStore();
 
-const createWrapper = (cartItems = cartItemsMock, dispatch = vi.fn()) => {
+  if (customCartStore) {
+    Object.assign(cartStore, customCartStore);
+  } else {
+    cartStore.items = cartItems;
+    cartStore.addToCart = vi.fn();
+    cartStore.removeFromCart = vi.fn();
+  }
+
   return mount(ProductCard, {
     props: {
       ...mockProduct,
     },
     global: {
-      mocks: {
-        $store: {
-          getters: {
-            "cart/cartItems": cartItems,
-          },
-          dispatch,
-        },
+      plugins: [pinia],
+      stubs: {
+        "font-awesome-icon": true,
       },
     },
   });
 };
 
 describe("ProductCard.vue", () => {
-  let dispatchMock: ReturnType<typeof vi.fn>;
-
   beforeEach(() => {
-    dispatchMock = vi.fn();
+    vi.clearAllMocks();
   });
 
   it("renders product title, price, image, and description", () => {
-    const wrapper = createWrapper(cartItemsMock, dispatchMock);
+    const wrapper = createWrapper();
 
     expect(wrapper.text()).toContain(mockProduct.title);
     expect(wrapper.text()).toContain(`${mockProduct.price}$`);
@@ -48,25 +59,36 @@ describe("ProductCard.vue", () => {
     expect(wrapper.text()).toContain(mockProduct.description);
   });
 
-  it("calls removeProductFromCart when product is already in cart and cart icon clicked", async () => {
-    const wrapper = createWrapper(cartItemsMock, dispatchMock);
+  it("calls removeFromCart when product is in cart and cart icon is clicked", async () => {
+    const wrapper = createWrapper([
+      {
+        id: 1,
+        name: mockProduct.title,
+        price: mockProduct.price,
+        description: mockProduct.description,
+        image: mockProduct.imageSrc,
+        category: "",
+        rating: { rate: 0, count: 0 },
+      },
+    ]);
+
+    const cartStore = useCartStore();
 
     const cartIcon = wrapper.find(".card__actions-container--icon.active");
     await cartIcon.trigger("click");
 
-    expect(dispatchMock).toHaveBeenCalledWith(
-      "cart/removeProductFromCart",
-      mockProduct.id
-    );
+    expect(cartStore.removeFromCart).toHaveBeenCalledWith(mockProduct.id);
   });
 
-  it("calls addProductToCart when product is not in cart and cart icon clicked", async () => {
-    const wrapper = createWrapper([], dispatchMock);
+  it("calls addToCart when product is not in cart and cart icon is clicked", async () => {
+    const wrapper = createWrapper([]);
+
+    const cartStore = useCartStore();
 
     const cartIcon = wrapper.findAll(".card__actions-container--icon")[1];
     await cartIcon.trigger("click");
 
-    expect(dispatchMock).toHaveBeenCalledWith("cart/addProductToCart", {
+    expect(cartStore.addToCart).toHaveBeenCalledWith({
       id: mockProduct.id,
       name: mockProduct.title,
       price: mockProduct.price,
@@ -76,7 +98,7 @@ describe("ProductCard.vue", () => {
   });
 
   it("emits 'card-click' when card is clicked outside icons", async () => {
-    const wrapper = createWrapper([], dispatchMock);
+    const wrapper = createWrapper([]);
 
     await wrapper.trigger("click");
 
@@ -85,7 +107,7 @@ describe("ProductCard.vue", () => {
   });
 
   it("does NOT emit 'card-click' when clicking an icon", async () => {
-    const wrapper = createWrapper([], dispatchMock);
+    const wrapper = createWrapper([]);
 
     const icon = wrapper.find(".card__actions-container--icon");
     await icon.trigger("click");

@@ -1,35 +1,33 @@
-// stores/cart.ts
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 import type Product from "../../../../data/entities/Product";
 
-export const useCartStore = defineStore(
-  "cart",
-  () => {
-    const items = ref<Product[]>([]);
+interface State {
+  items: Product[];
+}
 
-    const addToCart = (product: Product) => {
-      console.log("Adding product to cart from pinia store:", product);
-      items.value.push(product);
-    };
+export const useCartStore = defineStore("cart", {
+  state: (): State => ({
+    items: [],
+  }),
 
-    const removeFromCart = (productId: number) => {
-      console.log("Removing product from cart pinia store:", productId);
-      items.value = items.value.filter((item) => item.id !== productId);
-    };
-
-    const cartItems = computed(() => items.value);
-    const cartCount = computed(() => items.value.length);
-
-    return {
-      items,
-      addToCart,
-      removeFromCart,
-      cartItems,
-      cartCount,
-    };
+  getters: {
+    cartItems: (state) => state.items,
+    cartCount: (state) => state.items.length,
+    totalPrice: (state) =>
+      state.items.reduce((sum, item) => sum + item.price, 0),
   },
-  {
-    persist: true, // Enable persistence for the entire cart store
-  }
-);
+
+  actions: {
+    addToCart(product: Product) {
+      console.log("Adding product to cart from pinia store:", product);
+      this.items.push(product);
+    },
+
+    removeFromCart(productId: number) {
+      console.log("Removing product from cart pinia store:", productId);
+      this.items = this.items.filter((item) => item.id !== productId);
+    },
+  },
+
+  persist: import.meta.env.MODE !== "test", // disable persist in test
+});

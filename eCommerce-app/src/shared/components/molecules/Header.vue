@@ -1,6 +1,6 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import { useCartStore } from "../../store/pinia/index"; // adjust path if needed
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useCartStore } from "../../store/pinia/index";
 import { storeToRefs } from "pinia";
 
 import Logo from "../atoms/Logo.vue";
@@ -9,40 +9,28 @@ import ListOfActionIcons from "./ListOfActionIcons.vue";
 import ActionIcon from "../atoms/ActionIcon.vue";
 import Cart from "./Cart.vue";
 
-export default defineComponent({
-  name: "HeaderComponent",
-  components: {
-    Logo,
-    NavList,
-    ListOfActionIcons,
-    ActionIcon,
-    Cart,
-  },
-  data() {
-    const cartStore = useCartStore();
-    const { cartItems } = storeToRefs(cartStore);
+// Cart Store
+const cartStore = useCartStore();
+const { cartItems } = storeToRefs(cartStore);
 
-    return {
-      cartStore,
-      cartItems,
-      isDrawerOpen: false,
-      isCartOpen: false,
-    };
-  },
-  methods: {
-    toggleDrawer() {
-      if (this.isCartOpen) this.isCartOpen = false;
-      this.isDrawerOpen = !this.isDrawerOpen;
-    },
-    toggleCartDrawer() {
-      if (this.isDrawerOpen) this.isDrawerOpen = false;
-      this.isCartOpen = !this.isCartOpen;
-    },
-    handleRemove(id: number) {
-      this.cartStore.removeFromCart(id);
-    },
-  },
-});
+// Local state
+const isDrawerOpen = ref(false);
+const isCartOpen = ref(false);
+
+// Handlers
+function toggleDrawer() {
+  if (isCartOpen.value) isCartOpen.value = false;
+  isDrawerOpen.value = !isDrawerOpen.value;
+}
+
+function toggleCartDrawer() {
+  if (isDrawerOpen.value) isDrawerOpen.value = false;
+  isCartOpen.value = !isCartOpen.value;
+}
+
+// function handleRemove(id: number) {
+//   cartStore.removeFromCart(id);
+// }
 </script>
 
 <template>

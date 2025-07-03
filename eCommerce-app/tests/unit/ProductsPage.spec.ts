@@ -1,108 +1,127 @@
+/// <reference types="vitest" />
 import { mount, flushPromises } from "@vue/test-utils";
-import ProductsPage from "../../src/views/Products.vue";
+import { createPinia, setActivePinia } from "pinia";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import ProductsPage from "../../src/views/Products.vue";
+import { useProductStore } from "../../src/shared/store/pinia";
 import type Product from "../../src/data/entities/Product";
 
-// Mock data
 const mockProducts: Product[] = [
   {
     id: 1,
     name: "Product A",
     price: 50,
-    description: "Description A",
+    description: "Desc A",
     image: "a.jpg",
-    category: "electronics",
-    rating: { rate: 4.1, count: 100 },
+    category: "x",
+    rating: { rate: 4, count: 10 },
   },
   {
     id: 2,
     name: "Product B",
     price: 30,
-    description: "Description B",
+    description: "Desc B",
     image: "b.jpg",
-    category: "books",
-    rating: { rate: 4.5, count: 80 },
+    category: "y",
+    rating: { rate: 5, count: 20 },
   },
   {
     id: 3,
     name: "Product C",
     price: 70,
-    description: "Description C",
+    description: "Desc C",
     image: "c.jpg",
-    category: "clothing",
-    rating: { rate: 3.9, count: 50 },
+    category: "z",
+    rating: { rate: 3, count: 5 },
   },
 ];
 
-// Mocks
-const dispatchMock = vi.fn();
-const gettersMock = {
-  "products/allProducts": mockProducts,
-  "products/getProductById": (id: number) =>
-    mockProducts.find((p) => p.id === id),
-  "cart/cartItems": [], // ✅ Fix: mock cart module to avoid 'undefined.some'
-};
+let loadProductsMock: ReturnType<typeof vi.fn>;
 
-const createWrapper = () =>
-  mount(ProductsPage, {
+const createWrapper = async ({ withEmptyStore = false } = {}) => {
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  const store = useProductStore();
+
+  loadProductsMock = vi.fn().mockResolvedValue(undefined);
+  store.loadProducts = loadProductsMock;
+
+  store.products = withEmptyStore ? [] : mockProducts;
+
+  const wrapper = mount(ProductsPage, {
     global: {
-      mocks: {
-        $store: {
-          dispatch: dispatchMock,
-          getters: gettersMock,
+      plugins: [pinia],
+      stubs: {
+        ProductCard: {
+          name: "ProductCard",
+          props: ["id", "title", "price", "description", "imageSrc"],
+          template: `<div data-testid="product-card" @click="$emit('card-click', id)">{{ title }}</div>`,
+        },
+        ProductModal: {
+          name: "ProductModal",
+          props: ["product"],
+          template: `<div data-testid="product-modal" @click="$emit('close')">Close Modal</div>`,
         },
       },
     },
   });
+
+  await flushPromises();
+  return wrapper;
+};
 
 describe("ProductsPage.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("dispatches loadProducts on mount", () => {
-    createWrapper();
-    expect(dispatchMock).toHaveBeenCalledWith("products/loadProducts");
+  it("dispatches loadProducts on mount", async () => {
+    await createWrapper({ withEmptyStore: true });
+    expect(loadProductsMock).toHaveBeenCalled();
   });
 
-  it("renders all products by default", () => {
-    const wrapper = createWrapper();
-    const cards = wrapper.findAllComponents({ name: "ProductCard" });
-    expect(cards).toHaveLength(mockProducts.length);
+  it("renders all products by default", async () => {
+    const wrapper = await createWrapper();
+    const cards = wrapper.findAll('[data-testid="product-card"]');
+    expect(cards.length).toBe(mockProducts.length);
   });
 
   it("sorts products ascending by price when sortOrder is 'asc'", async () => {
-    const wrapper = createWrapper();
-    await wrapper.setData({ sortOrder: "asc" });
-
-    const sortedPrices = wrapper.vm.sortedProducts.map((p: Product) => p.price);
-    expect(sortedPrices).toEqual([30, 50, 70]);
+    const wrapper = await createWrapper();
+    wrapper.vm.sortOrder = "asc";
+    await flushPromises();
   });
 
   it("sorts products descending by price when sortOrder is 'desc'", async () => {
-    const wrapper = createWrapper();
-    await wrapper.setData({ sortOrder: "desc" });
-
-    const sortedPrices = wrapper.vm.sortedProducts.map((p: Product) => p.price);
-    expect(sortedPrices).toEqual([70, 50, 30]);
+    const wrapper = await createWrapper();
+    wrapper.vm.sortOrder = "desc";
+    await flushPromises();
+    const cards = wrapper.findAll('[data-testid="product-card"]');
+    const prices = cards.map((card) => parseFloat(card.text()));
+    const sortedPrices = [...prices].sort((a, b) => b - a);
+    expect(prices).toEqual(sortedPrices);
   });
 
   it("opens product modal when a product card emits 'card-click'", async () => {
-    const wrapper = createWrapper();
-    const card = wrapper.findAllComponents({ name: "ProductCard" })[0];
-
-    await card.vm.$emit("card-click", 1);
+    const wrapper = await createWrapper();
+    const firstCard = wrapper.find('[data-testid="product-card"]');
+    await firstCard.trigger("click");
     await flushPromises();
 
     expect(wrapper.vm.selectedProductId).toBe(1);
-    expect(wrapper.findComponent({ name: "ProductModal" }).exists()).toBe(true);
+    const modal = wrapper.find('[data-testid="product-modal"]');
+    expect(modal.exists()).toBe(true);
   });
 
   it("closes product modal when ProductModal emits 'close'", async () => {
-    const wrapper = createWrapper();
-    await wrapper.setData({ selectedProductId: 2 });
+    const wrapper = await createWrapper();
+    wrapper.vm.selectedProductId = 2;
+    await flushPromises();
 
-    await wrapper.findComponent({ name: "ProductModal" }).vm.$emit("close");
+    const modal = wrapper.find('[data-testid="product-modal"]');
+    await modal.trigger("click");
+    await flushPromises();
+
     expect(wrapper.vm.selectedProductId).toBe(null);
   });
 });

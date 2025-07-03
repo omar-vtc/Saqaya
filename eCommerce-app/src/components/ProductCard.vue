@@ -1,70 +1,65 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import { useCartStore } from "../shared/store/pinia/index"; // Adjust path if needed
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useCartStore } from "../shared/store/pinia/index";
 import type Product from "../data/entities/Product";
 import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
+import { defineProps, defineEmits } from "vue";
 
-export default defineComponent({
-  name: "ProductCard",
-  components: {
-    ListOfActionIcons,
-  },
-  props: {
-    id: Number,
-    title: String,
-    price: Number,
-    description: String,
-    imageSrc: String,
-  },
-  data() {
-    return {
-      cartStore: useCartStore(),
-    };
-  },
-  computed: {
-    isInCart(): boolean {
-      return this.cartStore.cartItems.some((item) => item.id === this.id);
-    },
-    cartIconClass(): string {
-      return this.isInCart
-        ? "card__actions-container--icon active"
-        : "card__actions-container--icon";
-    },
-    actionIcons(): any[] {
-      return [
-        { name: "fa-regular fa-heart" },
-        {
-          name: "fa-solid fa-cart-plus",
-          onClick: () => this.toggleCart(),
-          class: this.cartIconClass,
-        },
-        { name: ["far", "square-plus"] },
-      ];
-    },
-  },
-  methods: {
-    toggleCart() {
-      const product: Product = {
-        id: this.id ?? 0,
-        name: this.title ?? "",
-        price: this.price ?? 0,
-        description: this.description ?? "",
-        image: this.imageSrc ?? "",
-      };
+const props = defineProps<{
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  imageSrc: string;
+}>();
 
-      if (this.isInCart) {
-        this.cartStore.removeFromCart(product.id);
-      } else {
-        this.cartStore.addToCart(product);
-      }
-    },
-    handleCardClick(event: MouseEvent) {
-      const target = event.target as HTMLElement;
-      if (target.closest(".card__actions-container--icon")) return;
-      this.$emit("card-click", this.id);
-    },
+const emit = defineEmits<{
+  (e: "card-click", id: number): void;
+}>();
+
+const cartStore = useCartStore();
+
+const isInCart = computed(() =>
+  cartStore.cartItems.some((item) => item.id === props.id)
+);
+
+const cartIconClass = computed(() =>
+  isInCart.value
+    ? "card__actions-container--icon active"
+    : "card__actions-container--icon"
+);
+
+function toggleCart() {
+  const product: Product = {
+    id: props.id ?? 0,
+    name: props.title ?? "",
+    price: props.price ?? 0,
+    description: props.description ?? "",
+    image: props.imageSrc ?? "",
+  };
+
+  if (isInCart.value) {
+    cartStore.removeFromCart(product.id);
+  } else {
+    cartStore.addToCart(product);
+  }
+}
+
+function handleCardClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+  if (target.closest(".card__actions-container--icon")) return;
+  emit("card-click", props.id);
+}
+
+const actionIcons = computed((): any[] => [
+  { name: "fa-regular fa-heart" },
+  {
+    name: "fa-solid fa-cart-plus",
+    onClick: toggleCart,
+    class: cartIconClass.value,
   },
-});
+  { name: ["far", "square-plus"] },
+]);
 </script>
 
 <template>

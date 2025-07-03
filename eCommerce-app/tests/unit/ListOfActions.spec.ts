@@ -1,11 +1,13 @@
+/// <reference types="vitest" />
+import { describe, it, expect, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { createStore } from "vuex";
-import { describe, it, expect, vi } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { useCartStore } from "../../src/shared/store/pinia"; // adjust path to your Pinia store
 import Header from "../../src/shared/components/molecules/Header.vue";
 import ListOfActionIcons from "../../src/shared/components/molecules/ListOfActionIcons.vue";
 import ActionIcon from "../../src/shared/components/atoms/ActionIcon.vue";
 
-// Product type
+// Mock product type
 type Product = {
   id: number;
   name: string;
@@ -13,41 +15,31 @@ type Product = {
   image: string;
 };
 
-// Vuex store mock
-const createVuexStore = (items: Product[] = []) =>
-  createStore({
-    modules: {
-      cart: {
-        namespaced: true,
-        state: () => ({
-          items,
-        }),
-        getters: {
-          cartItems: (state) => state.items,
-        },
-        actions: {
-          removeProductFromCart: vi.fn(),
-        },
+// Helper to create a fresh pinia instance and prefill the cart
+const mountHeaderWithCart = (items: Product[]) => {
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  const cartStore = useCartStore();
+  cartStore.$patch({ items });
+
+  return mount(Header, {
+    global: {
+      plugins: [pinia],
+      components: {
+        ActionIcon,
+        ListOfActionIcons,
+      },
+      stubs: {
+        "font-awesome-icon": true,
+        "router-link": true,
       },
     },
   });
+};
 
 describe("Header.vue", () => {
   it("renders core components", () => {
-    const store = createVuexStore([]);
-    const wrapper = mount(Header, {
-      global: {
-        plugins: [store],
-        components: {
-          ActionIcon,
-          ListOfActionIcons,
-        },
-        stubs: {
-          "font-awesome-icon": true,
-          "router-link": true,
-        },
-      },
-    });
+    const wrapper = mountHeaderWithCart([]);
 
     expect(wrapper.findComponent({ name: "Logo" }).exists()).toBe(true);
     expect(wrapper.findComponent({ name: "NavList" }).exists()).toBe(true);
@@ -60,28 +52,9 @@ describe("Header.vue", () => {
   });
 
   it("toggles cart drawer when shopping-cart icon is clicked", async () => {
-    const store = createVuexStore([
-      {
-        id: 1,
-        name: "Product 1",
-        price: 100,
-        image: "test.jpg",
-      },
+    const wrapper = mountHeaderWithCart([
+      { id: 1, name: "Product 1", price: 100, image: "test.jpg" },
     ]);
-
-    const wrapper = mount(Header, {
-      global: {
-        plugins: [store],
-        components: {
-          ActionIcon,
-          ListOfActionIcons,
-        },
-        stubs: {
-          "font-awesome-icon": true,
-          "router-link": true,
-        },
-      },
-    });
 
     const cartButton = wrapper.find('[data-testid="icon-shopping-cart"]');
     expect(cartButton.exists()).toBe(true);
@@ -93,25 +66,11 @@ describe("Header.vue", () => {
   });
 
   it("displays correct cart item count in badge", () => {
-    const store = createVuexStore([
+    const wrapper = mountHeaderWithCart([
       { id: 1, name: "P1", price: 10, image: "" },
       { id: 2, name: "P2", price: 20, image: "" },
       { id: 3, name: "P3", price: 30, image: "" },
     ]);
-
-    const wrapper = mount(Header, {
-      global: {
-        plugins: [store],
-        components: {
-          ActionIcon,
-          ListOfActionIcons,
-        },
-        stubs: {
-          "font-awesome-icon": true,
-          "router-link": true,
-        },
-      },
-    });
 
     const badge = wrapper.find(
       '[data-testid="icon-shopping-cart"] .icon-badge'
