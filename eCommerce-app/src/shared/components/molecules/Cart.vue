@@ -1,36 +1,27 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import { useCartStore } from "../../store/pinia/index"; // adjust the path if necessary
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useCartStore } from "../../store/pinia/index"; // Adjust path if needed
 import { storeToRefs } from "pinia";
+import { defineProps, defineEmits } from "vue";
 
-export default defineComponent({
-  name: "CartDrawer",
-  props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  data() {
-    const cartStore = useCartStore();
-    const { cartItems } = storeToRefs(cartStore);
+const props = defineProps<{
+  isOpen: boolean;
+}>();
 
-    return {
-      cartStore,
-      cartItems,
-    };
-  },
-  computed: {
-    totalPrice(): number {
-      return this.cartItems.reduce((sum, item) => sum + item.price, 0);
-    },
-  },
-  methods: {
-    handleRemove(id: number) {
-      this.cartStore.removeFromCart(id);
-    },
-  },
-});
+const emit = defineEmits<{
+  (e: "close"): void;
+}>();
+
+const cartStore = useCartStore();
+const { cartItems } = storeToRefs(cartStore);
+
+const totalPrice = computed(() =>
+  cartItems.value.reduce((sum, item) => sum + item.price, 0)
+);
+
+function handleRemove(id: number) {
+  cartStore.removeFromCart(id);
+}
 </script>
 
 <template>
