@@ -40,13 +40,10 @@ library.add(
 
 import "@mdi/font/css/materialdesignicons.css";
 
-import { store } from "./shared/store";
-
 const app = createApp(App);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-app.use(store);
 app.use(router);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.use(pinia);

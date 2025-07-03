@@ -1,8 +1,8 @@
 // stores/products.ts
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import type Product from "@/data/entities/Product";
-import { fetchProducts } from "@/data/api/getProducts";
+import type Product from "../../../../data/entities/Product";
+import { fetchProducts } from "../../../../data/api/getProducts";
 
 export const useProductStore = defineStore("products", () => {
   const products = ref<Product[]>([]);
