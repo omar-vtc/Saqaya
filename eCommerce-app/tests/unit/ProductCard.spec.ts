@@ -3,7 +3,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import ProductCard from "../../src/components/ProductCard.vue";
-import { useCartStore } from "../../src/shared/store/pinia"; // adjust the path to your Pinia cart store
+import { useCartStore } from "../../src/shared/store/pinia";
+import type Product from "../../src/data/entities/Product"; // ✅ Import Product type
 
 // Mock product
 const mockProduct = {
@@ -14,8 +15,9 @@ const mockProduct = {
   imageSrc: "https://example.com/image.jpg",
 };
 
+// ✅ Properly typed cartItems
 const createWrapper = (
-  cartItems = [],
+  cartItems: Product[] = [],
   customCartStore?: ReturnType<typeof useCartStore>
 ) => {
   const pinia = createPinia();
@@ -63,7 +65,10 @@ describe("ProductCard.vue", () => {
         id: 1,
         name: mockProduct.title,
         price: mockProduct.price,
+        description: mockProduct.description,
         image: mockProduct.imageSrc,
+        category: "",
+        rating: { rate: 0, count: 0 },
       },
     ]);
 
