@@ -1,5 +1,5 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { ref, computed, onMounted } from "vue";
 import { useProductStore } from "../shared/store/pinia/index"; // adjust if needed
 import ProductCard from "../components/ProductCard.vue";
 import Pagination from "../shared/components/molecules/Pagination.vue";
@@ -7,53 +7,46 @@ import ProductModal from "../components/ProductModal.vue";
 import type Product from "../data/entities/Product";
 import SortBanner from "../shared/components/molecules/SortBanner.vue";
 
-export default defineComponent({
-  name: "ProductsPage",
-  components: {
-    ProductCard,
-    Pagination,
-    ProductModal,
-    SortBanner,
-  },
-  data() {
-    return {
-      productStore: useProductStore(),
-      selectedProductId: null as number | null,
-      sortOrder: "default" as "default" | "asc" | "desc",
-    };
-  },
-  computed: {
-    products(): Product[] {
-      return this.productStore.allProducts;
-    },
-    sortedProducts(): Product[] {
-      const products = [...this.products];
-      if (this.sortOrder === "asc") {
-        return products.sort((a, b) => a.price - b.price);
-      } else if (this.sortOrder === "desc") {
-        return products.sort((a, b) => b.price - a.price);
-      }
-      return products;
-    },
-    selectedProduct(): Product | undefined {
-      return this.selectedProductId !== null
-        ? this.productStore.getProductById(this.selectedProductId)
-        : undefined;
-    },
-  },
-  methods: {
-    openProductModal(productId: number) {
-      this.selectedProductId = productId;
-    },
-    closeProductModal() {
-      this.selectedProductId = null;
-    },
-  },
-  async mounted() {
-    if (this.productStore.products.length === 0) {
-      await this.productStore.loadProducts();
-    }
-  },
+// Store
+const productStore = useProductStore();
+
+// State
+const selectedProductId = ref<number | null>(null);
+const sortOrder = ref<"default" | "asc" | "desc">("default");
+
+// Computed
+const products = computed(() => productStore.allProducts);
+
+const sortedProducts = computed(() => {
+  const list = [...products.value];
+  if (sortOrder.value === "asc") {
+    return list.sort((a, b) => a.price - b.price);
+  } else if (sortOrder.value === "desc") {
+    return list.sort((a, b) => b.price - a.price);
+  }
+  return list;
+});
+
+const selectedProduct = computed(() => {
+  return selectedProductId.value !== null
+    ? productStore.getProductById(selectedProductId.value)
+    : undefined;
+});
+
+// Methods
+function openProductModal(productId: number) {
+  selectedProductId.value = productId;
+}
+
+function closeProductModal() {
+  selectedProductId.value = null;
+}
+
+// Lifecycle
+onMounted(async () => {
+  if (productStore.products.length === 0) {
+    await productStore.loadProducts();
+  }
 });
 </script>
 

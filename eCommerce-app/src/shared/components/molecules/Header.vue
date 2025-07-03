@@ -28,9 +28,9 @@ function toggleCartDrawer() {
   isCartOpen.value = !isCartOpen.value;
 }
 
-function handleRemove(id: number) {
-  cartStore.removeFromCart(id);
-}
+// function handleRemove(id: number) {
+//   cartStore.removeFromCart(id);
+// }
 </script>
 
 <template>
