@@ -1,3 +1,18 @@
+<script lang="ts">
+import { defineComponent, PropType } from "vue";
+import type Product from "../data/entities/Product";
+
+export default defineComponent({
+  name: "ProductModal",
+  props: {
+    product: {
+      type: Object as PropType<Product>,
+      required: false,
+    },
+  },
+});
+</script>
+
 <!-- components/ProductModal.vue -->
 <template>
   <div v-if="product" class="overlay" @click.self="$emit('close')">
@@ -17,21 +32,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
-import type Product from "../data/entities/Product";
-
-export default defineComponent({
-  name: "ProductModal",
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: false,
-    },
-  },
-});
-</script>
 
 <style scoped>
 .overlay {
