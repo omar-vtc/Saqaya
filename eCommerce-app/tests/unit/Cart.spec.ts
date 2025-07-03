@@ -28,7 +28,7 @@ describe("Cart.vue", () => {
     pinia = createPinia();
     setActivePinia(pinia);
     cartStore = useCartStore();
-    cartStore.items.value = [...mockCartItems]; // ✅ safe ref mutation
+    cartStore.$patch({ items: [...mockCartItems] });
   });
 
   it("renders when isOpen is true", () => {

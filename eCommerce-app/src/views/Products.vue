@@ -1,20 +1,22 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
-import { useProductStore } from "../shared/store/pinia/index"; // adjust if needed
+import { ref, computed, onMounted, defineExpose } from "vue";
+import { useProductStore } from "../shared/store/pinia/index";
 import ProductCard from "../components/ProductCard.vue";
 import Pagination from "../shared/components/molecules/Pagination.vue";
 import ProductModal from "../components/ProductModal.vue";
 import type Product from "../data/entities/Product";
 import SortBanner from "../shared/components/molecules/SortBanner.vue";
 
-// Store
 const productStore = useProductStore();
 
-// State
 const selectedProductId = ref<number | null>(null);
 const sortOrder = ref<"default" | "asc" | "desc">("default");
 
-// Computed
+defineExpose({
+  selectedProductId,
+  sortOrder,
+});
+
 const products = computed(() => productStore.allProducts);
 
 const sortedProducts = computed(() => {
@@ -33,7 +35,6 @@ const selectedProduct = computed(() => {
     : undefined;
 });
 
-// Methods
 function openProductModal(productId: number) {
   selectedProductId.value = productId;
 }
@@ -42,7 +43,6 @@ function closeProductModal() {
   selectedProductId.value = null;
 }
 
-// Lifecycle
 onMounted(async () => {
   if (productStore.products.length === 0) {
     await productStore.loadProducts();

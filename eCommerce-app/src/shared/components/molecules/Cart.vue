@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useCartStore } from "../../store/pinia/index";
-import { storeToRefs } from "pinia";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps<{
@@ -13,11 +12,9 @@ const emit = defineEmits<{
 }>();
 
 const cartStore = useCartStore();
-const { cartItems } = storeToRefs(cartStore);
 
-const totalPrice = computed(() =>
-  cartItems.value.reduce((sum, item) => sum + item.price, 0)
-);
+const cartItems = computed(() => cartStore.cartItems);
+const totalPrice = computed(() => cartStore.totalPrice);
 
 function handleRemove(id: number) {
   cartStore.removeFromCart(id);

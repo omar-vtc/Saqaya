@@ -1,10 +1,11 @@
 /// <reference types="vitest" />
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
 import Layout from "../../src/layouts/Layout.vue";
 import Header from "../../src/shared/components/molecules/Header.vue";
 import Footer from "../../src/shared/components/molecules/Footer.vue";
-import { createStore } from "vuex";
+import { useCartStore } from "../../src/shared/store/pinia/index";
 import { createRouter, createWebHistory } from "vue-router";
 
 // Stub for font-awesome-icon
@@ -13,25 +14,7 @@ const FontAwesomeIconStub = {
   template: "<i />",
 };
 
-// Define mock cart module
-const cartModule = {
-  namespaced: true,
-  getters: {
-    cartItems: () => [{ id: 1, name: "Mock Item" }],
-  },
-  actions: {
-    removeProductFromCart: vi.fn(),
-  },
-};
-
-// Create Vuex store with mocked module
-const store = createStore({
-  modules: {
-    cart: cartModule,
-  },
-});
-
-// Create minimal router setup
+// Create mock router
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -42,10 +25,21 @@ const router = createRouter({
 });
 
 describe("Layout.vue", () => {
+  beforeEach(() => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    // Optional: preload the cart store with items
+    const cartStore = useCartStore();
+    cartStore.$patch({
+      items: [{ id: 1, name: "Mock Item", price: 10, image: "x.png" }],
+    });
+  });
+
   it("renders Header, router-view, and Footer", async () => {
     const wrapper = mount(Layout, {
       global: {
-        plugins: [store, router],
+        plugins: [createPinia(), router],
         stubs: {
           FontAwesomeIcon: FontAwesomeIconStub,
         },
@@ -62,7 +56,7 @@ describe("Layout.vue", () => {
     expect(wrapper.find("main").exists()).toBe(true);
     expect(wrapper.findComponent(Footer).exists()).toBe(true);
 
-    // Optional: check router-view content renders
+    // Verify content inside <router-view>
     expect(wrapper.html()).toContain("Home View");
   });
 });
