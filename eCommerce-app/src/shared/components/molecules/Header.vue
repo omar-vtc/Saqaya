@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useCartStore } from "../../store/pinia/index"; // adjust path if necessary
+import { useCartStore } from "../../store/pinia/index";
 import { storeToRefs } from "pinia";
 
 import Logo from "../atoms/Logo.vue";

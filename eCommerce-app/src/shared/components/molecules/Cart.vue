@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useCartStore } from "../../store/pinia/index"; // Adjust path if needed
+import { useCartStore } from "../../store/pinia/index";
 import { storeToRefs } from "pinia";
 import { defineProps, defineEmits } from "vue";
 
