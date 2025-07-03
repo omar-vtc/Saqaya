@@ -1,13 +1,16 @@
 <script lang="ts">
-import { ref, computed } from "vue";
-import { mapGetters, mapActions } from "vuex";
+import { defineComponent } from "vue";
+import { useCartStore } from "../../store/pinia/index"; // adjust path if needed
+import { storeToRefs } from "pinia";
+
 import Logo from "../atoms/Logo.vue";
 import NavList from "./NavList.vue";
 import ListOfActionIcons from "./ListOfActionIcons.vue";
 import ActionIcon from "../atoms/ActionIcon.vue";
 import Cart from "./Cart.vue";
 
-export default {
+export default defineComponent({
+  name: "HeaderComponent",
   components: {
     Logo,
     NavList,
@@ -16,16 +19,17 @@ export default {
     Cart,
   },
   data() {
+    const cartStore = useCartStore();
+    const { cartItems } = storeToRefs(cartStore);
+
     return {
+      cartStore,
+      cartItems,
       isDrawerOpen: false,
       isCartOpen: false,
     };
   },
-  computed: {
-    ...mapGetters("cart", ["cartItems"]),
-  },
   methods: {
-    ...mapActions("cart", ["removeProductFromCart"]),
     toggleDrawer() {
       if (this.isCartOpen) this.isCartOpen = false;
       this.isDrawerOpen = !this.isDrawerOpen;
@@ -35,10 +39,10 @@ export default {
       this.isCartOpen = !this.isCartOpen;
     },
     handleRemove(id: number) {
-      this.removeProductFromCart(id);
+      this.cartStore.removeFromCart(id);
     },
   },
-};
+});
 </script>
 
 <template>

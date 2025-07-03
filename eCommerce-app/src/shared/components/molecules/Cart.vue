@@ -1,27 +1,33 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapGetters, mapActions } from "vuex";
+import { useCartStore } from "../../store/pinia/index"; // adjust the path if necessary
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
+  name: "CartDrawer",
   props: {
     isOpen: {
       type: Boolean,
       required: true,
     },
   },
+  data() {
+    const cartStore = useCartStore();
+    const { cartItems } = storeToRefs(cartStore);
+
+    return {
+      cartStore,
+      cartItems,
+    };
+  },
   computed: {
-    ...mapGetters("cart", ["cartItems"]),
     totalPrice(): number {
-      return this.cartItems.reduce(
-        (sum: number, item: any) => sum + item.price,
-        0
-      );
+      return this.cartItems.reduce((sum, item) => sum + item.price, 0);
     },
   },
   methods: {
-    ...mapActions("cart", ["removeProductFromCart"]),
     handleRemove(id: number) {
-      this.removeProductFromCart(id);
+      this.cartStore.removeFromCart(id);
     },
   },
 });

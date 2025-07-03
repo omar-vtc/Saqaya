@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useCartStore } from "../shared/store/pinia/index"; // Adjust path if needed
 import type Product from "../data/entities/Product";
 import ListOfActionIcons from "../shared/components/molecules/ListOfActionIcons.vue";
 
@@ -15,18 +16,20 @@ export default defineComponent({
     description: String,
     imageSrc: String,
   },
+  data() {
+    return {
+      cartStore: useCartStore(),
+    };
+  },
   computed: {
-    // This computed property checks if the product is in the cart
     isInCart(): boolean {
-      const items: Product[] = this.$store.getters["cart/cartItems"];
-      return items.some((item) => item.id === this.id);
+      return this.cartStore.cartItems.some((item) => item.id === this.id);
     },
     cartIconClass(): string {
       return this.isInCart
         ? "card__actions-container--icon active"
         : "card__actions-container--icon";
     },
-    // This method returns the action icons for the product card (setting activity for cart icon)
     actionIcons(): any[] {
       return [
         { name: "fa-regular fa-heart" },
@@ -50,16 +53,14 @@ export default defineComponent({
       };
 
       if (this.isInCart) {
-        this.$store.dispatch("cart/removeProductFromCart", product.id);
+        this.cartStore.removeFromCart(product.id);
       } else {
-        this.$store.dispatch("cart/addProductToCart", product);
+        this.cartStore.addToCart(product);
       }
     },
     handleCardClick(event: MouseEvent) {
-      // If the click originated from an icon, don't emit
       const target = event.target as HTMLElement;
       if (target.closest(".card__actions-container--icon")) return;
-      // Otherwise, emit click to parent
       this.$emit("card-click", this.id);
     },
   },

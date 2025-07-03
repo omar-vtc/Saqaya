@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useProductStore } from "../shared/store/pinia/index"; // adjust if needed
 import ProductCard from "../components/ProductCard.vue";
 import Pagination from "../shared/components/molecules/Pagination.vue";
 import ProductModal from "../components/ProductModal.vue";
@@ -16,16 +17,17 @@ export default defineComponent({
   },
   data() {
     return {
+      productStore: useProductStore(),
       selectedProductId: null as number | null,
       sortOrder: "default" as "default" | "asc" | "desc",
     };
   },
   computed: {
     products(): Product[] {
-      return this.$store.getters["products/allProducts"];
+      return this.productStore.allProducts;
     },
     sortedProducts(): Product[] {
-      const products = [...this.products]; // clone to avoid mutating store
+      const products = [...this.products];
       if (this.sortOrder === "asc") {
         return products.sort((a, b) => a.price - b.price);
       } else if (this.sortOrder === "desc") {
@@ -35,7 +37,7 @@ export default defineComponent({
     },
     selectedProduct(): Product | undefined {
       return this.selectedProductId !== null
-        ? this.$store.getters["products/getProductById"](this.selectedProductId)
+        ? this.productStore.getProductById(this.selectedProductId)
         : undefined;
     },
   },
@@ -48,7 +50,9 @@ export default defineComponent({
     },
   },
   async mounted() {
-    await this.$store.dispatch("products/loadProducts");
+    if (this.productStore.products.length === 0) {
+      await this.productStore.loadProducts();
+    }
   },
 });
 </script>

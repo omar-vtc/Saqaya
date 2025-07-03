@@ -21,6 +21,8 @@ import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 library.add(
   faShoppingCart,
@@ -38,11 +40,12 @@ library.add(
 
 import "@mdi/font/css/materialdesignicons.css";
 
-import { store } from "./shared/store";
-
 const app = createApp(App);
-app.use(store);
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+
 app.use(router);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(pinia);
 
 app.mount("#app");
