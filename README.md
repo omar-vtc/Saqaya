@@ -1,4 +1,3 @@
-
 # Saqaya Ecommerce App
 
 A modern eCommerce frontend built with **Vue 3**, **TypeScript**, **Pinia**, and **Vue Router**. This app is designed with scalability, reusability, and performance in mind, showcasing product listings, cart functionality, and a responsive layout.
@@ -19,7 +18,6 @@ A modern eCommerce frontend built with **Vue 3**, **TypeScript**, **Pinia**, and
 │   │   └── components/
 │   │       ├── atoms/
 │   │       ├── molecules/
-│   │       ├── organisms/
 │   ├── store/              # Pinia store
 │   ├── pages/              # Page views
 │   ├── router/             # Vue Router config
@@ -36,11 +34,10 @@ A modern eCommerce frontend built with **Vue 3**, **TypeScript**, **Pinia**, and
 
 ### Layout
 
-- Uses a persistent layout with:
-  - `Header.vue`
-  - `Footer.vue`
-- `router-view` dynamically renders page components
-- Padding is added to avoid overlap with fixed header
+Uses a persistent layout with:
+
+- `Header.vue`
+- `Footer.vue`
 
 ```vue
 <template>
@@ -81,14 +78,10 @@ const props = defineProps<{
 
 ### Header.vue
 
-#### Features
-
 - Logo
 - Nav links (desktop)
 - Hamburger menu (mobile)
 - Cart drawer toggle
-
-#### Logic
 
 ```ts
 const isDrawerOpen = ref(false);
@@ -109,15 +102,7 @@ function toggleCartDrawer() {
 
 ### ListOfActionIcons.vue
 
-Renders a row of `ActionIcon` buttons with optional click handlers.
-
-#### Props
-
-| Prop        | Type             | Required | Description                              |
-|-------------|------------------|----------|------------------------------------------|
-| `className` | `string`         | No       | Container class                           |
-| `iconClass` | `string`         | No       | Default icon class                        |
-| `icons`     | `IconItem[]`     | ✅ Yes   | Array of icons with optional click events |
+Renders a row of icons with events.
 
 ```ts
 type IconItem = {
@@ -125,82 +110,8 @@ type IconItem = {
   onClick?: () => void;
   class?: string;
   badgeCount?: number;
-  [key: string]: unknown;
 };
 ```
-
-#### Example
-
-```vue
-<ListOfActionIcons
-  className="header__actions"
-  iconClass="action-icon"
-  :icons="[
-    { name: 'magnifying-glass' },
-    {
-      name: 'shopping-cart',
-      onClick: toggleCartDrawer,
-      badgeCount: cartItems.length
-    },
-    { name: 'right-to-bracket' }
-  ]"
-/>
-```
-
----
-
-### NavList.vue
-
-A basic vertical or horizontal list of navigation links.
-
-```vue
-<template>
-  <div :class="props.divClassName">
-    <ul :class="props.className">
-      <li :class="props.eleClassName">
-        <LinkRouter :to="'/'" class-name="list-item__ele" value="Home" />
-      </li>
-      <li :class="props.eleClassName">
-        <LinkRouter :to="'/products'" class-name="list-item__ele" value="Products" />
-      </li>
-      <li :class="props.eleClassName">
-        <LinkRouter :to="'/contact-us'" class-name="list-item__ele" value="Contact Us" />
-      </li>
-    </ul>
-  </div>
-</template>
-```
-
----
-
-### Cart.vue
-
-Shows cart contents in a right drawer.
-
-#### Logic
-
-```ts
-const props = defineProps<{ isOpen: boolean }>();
-const emit = defineEmits<{ (e: "close"): void }>();
-
-const cartStore = useCartStore();
-const cartItems = computed(() => cartStore.cartItems);
-const totalPrice = computed(() => cartStore.totalPrice);
-
-function handleRemove(id: number) {
-  cartStore.removeFromCart(id);
-}
-```
-
-#### Template Snippet
-
-```vue
-<Cart :isOpen="isCartOpen" @close="toggleCartDrawer" />
-```
-
-- Displays cart items
-- Shows total price
-- Supports removing items and closing cart drawer
 
 ---
 
@@ -216,13 +127,18 @@ export const useCartStore = defineStore("cart", {
   getters: {
     cartItems: (state) => state.items,
     cartCount: (state) => state.items.length,
-    totalPrice: (state) => state.items.reduce((sum, item) => sum + item.price, 0),
+    totalPrice: (state) =>
+      state.items.reduce((sum, item) => sum + item.price, 0),
   },
   actions: {
-    addToCart(product) { this.items.push(product); },
-    removeFromCart(id) { this.items = this.items.filter(item => item.id !== id); }
+    addToCart(product) {
+      this.items.push(product);
+    },
+    removeFromCart(id) {
+      this.items = this.items.filter((item) => item.id !== id);
+    },
   },
-  persist: import.meta.env.MODE !== "test"
+  persist: import.meta.env.MODE !== "test",
 });
 ```
 
@@ -235,14 +151,148 @@ export const useProductStore = defineStore("products", {
   state: () => ({ products: [] }),
   getters: {
     allProducts: (state) => state.products,
-    getProductById: (state) => (id) => state.products.find((p) => p.id === id),
+    getProductById: (state) => (id) =>
+      state.products.find((product) => product.id === id),
   },
   actions: {
-    setProducts(newProducts) { this.products = newProducts; },
+    setProducts(newProducts) {
+      this.products = newProducts;
+    },
     async loadProducts() {
       const loadedProducts = await fetchProducts();
       this.setProducts(loadedProducts);
-    }
-  }
+    },
+  },
 });
 ```
+
+---
+
+## 🧱 Main Components
+
+### ProductCard.vue
+
+Displays a product with title, price, image, and action icons.
+
+- Emits: `card-click`
+- Highlights if in cart
+- Toggles cart on icon click
+
+```ts
+const isInCart = computed(() =>
+  cartStore.cartItems.some((item) => item.id === props.id)
+);
+
+const cartIconClass = computed(() =>
+  isInCart.value
+    ? "card__actions-container--icon active"
+    : "card__actions-container--icon"
+);
+
+function toggleCart() {
+  const product: Product = {
+    id: props.id,
+    name: props.title,
+    price: props.price,
+    description: props.description,
+    image: props.imageSrc,
+  };
+
+  isInCart.value
+    ? cartStore.removeFromCart(product.id)
+    : cartStore.addToCart(product);
+}
+```
+
+---
+
+### ProductModal.vue
+
+Displays a detailed view of a product in a modal overlay.
+
+#### Props
+
+- `product` (`Product | undefined`) — Optional, displays content if present
+
+#### Emits
+
+- `close` — Emitted when background or close button is clicked
+
+```vue
+<template>
+  <div v-if="product" class="overlay" @click.self="$emit('close')">
+    <div class="overlay__content">
+      <button class="overlay__close" @click="$emit('close')">×</button>
+      <h2>{{ product.name }}</h2>
+      <img :src="product.image" alt="Product Image" />
+      <p>{{ product.description }}</p>
+      <p><strong>Category:</strong> {{ product.category }}</p>
+      <p>
+        <strong>Rating:</strong> {{ product.rating?.rate }} ⭐ ({{
+          product.rating?.count
+        }} reviews)
+      </p>
+      <p><strong>Price:</strong> ${{ product.price }}</p>
+    </div>
+  </div>
+</template>
+```
+
+#### Styles
+
+```css
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.overlay__content {
+  background: #fff;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.overlay__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.overlay__content img {
+  max-width: 100%;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+```
+
+---
+
